@@ -1,0 +1,57 @@
+Notes from the Witty Pi docs:
+
+- on the Pi, connected to internet, download the witty pi software:
+  wget http://www.uugear.com/repo/WittyPi/installWittyPi.sh 
+- run the install script:
+  $ sudo sh installWittyPi.sh
+- this will: 
+  1.  Enable I2C on your Raspberry Pi 
+  2.  Install i2cctools, if it is not installed yet 
+  3.  Configure Bluetooth to use minicUART (Raspberry Pi 3 only) 
+  4.  Install wiringPi, if it is not installed yet 
+  5.  Install Witty Pi programs, if they are not installed yet 
+
+- after running there will be a WittyPi dir with:
+  daemon.sh    init.sh    syncTime.sh    utilities.sh    wittyPi.sh  
+- installer will have added daemon.sh to /etc/init.d so it starts on boot
+- syncTime.sh will run 1 minute after boot to sync witty RTC and Pi system clock
+  - time is editable in /etc/init.d/wittypi
+- wittyPi.sh is interactive config software
+  - includes options for copying time back and forth, and selecting schedules
+  - we will write a schedule script, and then enable it from the wittyPi.sh
+
+- **IMPORTANT***: when a schedule script is set to shut down the Pi, do NOT
+  shut down the Pi manually by cutting power or it could deadlock
+  - also do not use "sudo shutdown -h now"
+  - to do a manual shutdown, tap the button on the witty
+  - witty needs to do pin housekeeping
+  - if this happens we need to reset the WittyPi 
+    - unplug power and battery, wait one 1 minute
+- schedule scripts write to ~/WittyPi/schedule.log
+
+Enabling schedule script:
+- copy target schedule script to ~/WittyPi/schedule.wpi
+  $ cp myscript.wpi WittyPi/schedule.wpi
+- run the enable script:
+  $ cd ~/WittyPi && sudo ./runScript.sh
+- this way other programs can alter the Witty Schedule
+
+Schedule script syntax:
+- script has start and end time, and a loop of on/off
+  # Turn on Raspberry Pi for 5 minutes, in every 20 minutes 
+  BEGIN  2015-08-01 00:00:00 
+  END    2025-07-31 23:59:59 
+  ON     M5   # keep ON state for 5 minutes  
+  OFF    M15  # keep OFF state for 15 minutes 
+- can use combinations D H M S, ie on for 1.5 hours:
+  ON    H1   M30
+
+- when a WittyPi is attached, we use that to power on and off the Pi:
+  - the red jumper sets whether the default is on or off when power applied to Witty
+
+- potential issues:
+  - if our main power supply is too low (unstable) it may hose the witty
+  - if voltage drops during boot, it may seem to the script like the GPIO pin went low
+  - if so, there are workarounds, see p20 in the Witty manual
+     - you can schedule the GPIO listener to wait longer after boot
+  - witty uses GPIO4, GPIO17, GPIO2 (SDA 1), GPIO3 (SCL 1) and GPIO14 (TXD).   
