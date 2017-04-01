@@ -1,0 +1,36 @@
+
+
+TODO:
+- choose the battery:
+- get power cable connectors for camera power from quail
+
+- power supply to go from 12V big battery:
+  - to 12V to AIS
+  - 9V to Camera (which we'll splice)
+  - 5V to Pi
+  - (5V to drive? probably not necessary
+
+
+- Battery
+- Solar charger for battery
+- Power supply
+- Relay switch for Pi to 9V line:
+- call Quaile electronics for that
+
+- make image of the drive
+
+
+- write script for capturing data from Digital Yacht
+  
+  
+
+Voltage:
+- the UBEC DC-DC step down could give us 5V,  $10
+  https://www.adafruit.com/products/1385
+- this one is meant to handle fluctuating input and send out to the PI
+- AES I think we ought to be able to just hook up? check current limitiations
+- that leaves camera for 9V, could use 
+
+- question, could we run the camera off only 5V??
+
+
