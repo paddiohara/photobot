@@ -1,0 +1,117 @@
+Setting up the Raspberry Pi 3 for photo capture, using the photobot installer script
+====================================================================================
+
+Requirements:
+-------------
+This document details how to get the Pi 3 working for photo capture. In this doc,
+
+You will need:
+- A computer running OSX, Windows, or Linux (the host)
+- A raspberry Pi 3
+- An SD card and reader, we will load the SD card from the host and put it in the Pi
+- An ethernet cable and connection for the Pi
+- Internet connection for your host and Pi, we assume you have wireless.
+
+
+We have only tested these instructions on OSX. They should work (almost) identically on Linux.
+It's definitely possible on Windows but the commands and tools are likely different. 
+
+In our instructions:
+"on your host" means commands exected on your computer (OSX, or Linux)
+"on the pi":  menas commands exectued on the Pi at a command line prompt that we get to via SSH 
+
+Lines in this document starting with '$' are commands typed at a terminal,
+either on the host or the Pi. You don't need to type the '$', that's your prompt.
+
+
+Overview of Steps:
+------------------
+1) Setup up Raspberry Pi with Raspbian Jessie, with SSH access 
+2) Download the photobot installer script on to the pi
+3) Run the installer
+
+
+1: Setup Raspberry Pi System (from the host)
+--------------------------------------------
+We're going to install the Pi's operating system on an SD card, tweak it a bit,
+put it in the Pi, boot up, and SSH into the Pi.
+
+
+Download Raspbian Jessie Lite
+  - on your host computer, download raspbian-jessie-lite
+  https://www.raspberrypi.org/downloads/raspbian/
+  - the latest at time of writing is: January 2017
+  - we are using Jessie Lite as we will not be plugging a keyboard and monitor into the Pi, 
+    we're going to do everything over SSH
+
+
+Burn image on the SD card:
+  - put the SD card in your card reader and plug it into the USB port on your host
+  - find out the disk number of SD card by opening a terminal and executing:
+    $ diskutil list
+  - look for the entry that matches the size of your card (so we know it's not your host hard drive)
+  - for this example, on our machine it was: /dev/disk2
+  - unmount that disk: 
+    $ diskutil unmountDisk /dev/disk2
+  - copy or move the image you downloaded to the current directory, and execute
+    the following to copy that image onto your sd card
+    $ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/rdisk2
+  - note that in the above command, you must replace the name of the image file with your image
+    and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
+    Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
+
+Alter the image to enable SSH
+  - as of 2017, Raspbian now disables SSH by default for security so we need to alter the image
+    or we won't be able to get into the Pi when we boot
+  - after burning the image, the boot sector of our burned image should automount on the host from 
+    the card reader, as "Boot"
+  - we need to put an empty file called 'ssh' in to the boot directory
+  - in a terminal on your host, cd into the boot directory and execute:
+    $ sudo touch ssh
+  - check that it worked:
+    $ ls 
+    - you should see the file called 'ssh' in there
+
+Load into Pi
+  - unmount your SD reader, take out the SD card, put card into pi
+  - plug Pi into your network with an ethernet cable as it doesn't have wireless enabled yet
+  - boot the Pi
+  - on your host, find ip address of the pi using a portscanning application 
+    - on OSX we used the application "ipscan" (free download)
+  - once we have the IP, we can ssh in to the pi from the host using username 'pi', password 'raspberry'
+    $ ssh pi@192.168.1.68  
+  - you are now on the Pi and will see a security warning message to change your password
+  - on the pi, execute:
+    $ passwd
+  - remember this password, it is what you will use from now on when you ssh or sftp into
+    the pi as user "pi" and is the password the pi will need whenever you use the "sudo" command
+    
+
+Download the Installer
+----------------------
+  - ssh into the pi
+  - execute:
+    wget https://github.com/paddiohara/photobot/blob/master/photobot_installer.py  
+  - you should now see the python script "photbot_installer.py"
+
+
+Run the Installer
+-----------------
+- you can now run the installer as root with the command:
+  $ sudo python photobot_installer.py
+
+- The installer asks for confirmation before each task. This way you can
+ always rerun it, confirming only the tasks you want to run
+- On any error, it will ask if you want to exit. If you know it's ok to continue, you can
+ do so.
+
+- To see what the installer will do, you can do a dry run with:
+  $ sudo python photobot_installer.py --dry-run
+- A dry run will print every bash command the installer would do instead of executing it
+- If you want to setup wireless networking, you will need your network name and
+  password for the installer. It's fine to skip this and keep using an ethernet cable
+
+- If you would like explanations of what the installer is doing, see the companion
+  file to this one, "photobot_instructions_2017", in which each step is detailed
+  for manual entry
+
