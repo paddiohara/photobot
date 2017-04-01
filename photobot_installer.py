@@ -7,20 +7,16 @@ import os
 import logging
 import argparse
 
-def do(command):
-    "execute a shell command"
-    print(command)
-    #output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True) 
-    subprocess.check_call(command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True) 
-
 
 class PhotobotInstaller(object):
 
     def __init__(self, args):
         self.args = args
         self.wpa_file = args.wpa_file or "/etc/wpa_supplicant/wpa_supplicant.conf"
+        self.cron_file = args.cron_file or "/etc/crontab"
 
-    def do(command, kw=None):
+
+    def do(self, command, kw=None):
         "print and execute a shell command, exiting on failure"
         if kw:
             command = command.format(**kw)
@@ -29,17 +25,20 @@ class PhotobotInstaller(object):
             try:
                 subprocess.check_call(command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True) 
             except:
-                print("\n\nERROR executing command: '%s'" % command)
-                print("INSTALL ABORTED\n")
-                sys.exit() 
+                print("\nERROR executing command: '%s'" % command)
+                if self.confirm("continue anyway?"):
+                    return
+                else:
+                    sys.exit() 
+
 
     def confirm(self, question, allow_no=True):
         "ask user for confirmation to do task, returns result as boolean"
         while True:
             if allow_no:
-                res = input("%s y/n/x >> " % question)
+                res = raw_input("%s y/n/x >> " % question)
             else:
-                res = input("%s y/x >> " % question)
+                res = raw_input("%s y/x >> " % question)
 
             if res.lower() == 'x':
                 print("\nEXITING")
@@ -60,8 +59,8 @@ class PhotobotInstaller(object):
         # get network settings    
         # TODO check if the network is already in there
         while True:
-            network_name = input("Network name: ")
-            network_password = input("Network password: ")
+            network_name = raw_input("Network name: ")
+            network_password = raw_input("Network password: ")
             if self.confirm("Patch %s with network '%s' and password '%s'?" % 
                 (self.wpa_file, network_name, network_password) ):
                 break
@@ -72,8 +71,9 @@ class PhotobotInstaller(object):
     psk="%s"
   }
 """ % (network_name, network_password)
-        with open(self.wpa_file, "a") as wpa_file:
-            wpa_file.write(patch)
+        if not self.args.dry_run:
+            with open(self.wpa_file, "a") as wpa_file:
+                wpa_file.write(patch)
         if self.confirm("wpa file patched, restart networking?"):
             self.do("ifdown wlan0")
             self.do("ifup wlan0")
@@ -84,35 +84,67 @@ class PhotobotInstaller(object):
         print("running apt-get update, installing nano, vim, gphoto2...")
         self.do("apt-get update")
         self.do("apt-get install nano vim")
-        self.do("install gphoto2")
-        if self.confirm("test gphoto2 to see camera? (plug in camera)")
-            do("gphoto2 --list-config")
+        self.do("apt-get install gphoto2")
+        if self.confirm("test gphoto2 to see camera? (plug in camera)"):
+            self.do("gphoto2 --list-config")
             self.confirm("camera found, continue?", allow_no=False)    
 
 
     def setup_drive(self):
         print("setting up external USB drive")
-        if self.confirm("create dir /mnt/usbstorage")
-            do("mkdir /mnt/usbstorage")
+        if self.confirm("create dir /mnt/usbstorage"):
+            self.do("mkdir /mnt/usbstorage")
         self.confirm("plug in USB drive and continue", allow_no=False)
         print("checking drive ID with 'blkid'")
-        do("blkid")
+        self.do("blkid")
         while True:
-            dev_num = int( input("Enter drive number: ") )
+            dev_num = int( raw_input("Enter drive number: ") )
             if self.confirm("Drive number is '%i' " % dev_num):
                 break
         print("mounting /dev/sda%i" % dev_num)
-        do("mount dev/sda%i /mnt/usbstorage")
-        do("chmod 755 /mnt/usbstorage")        
-        if self.confirm("edit fstab file to automount drive as ext3?")
+        self.do("mount dev/sda%i /mnt/usbstorage")
+        self.do("chmod 755 /mnt/usbstorage")        
+        if self.confirm("edit fstab file to automount drive as ext3?"):
             patch = "/dev/sda%i /mnt/usbstorage /ext3 defaults 0 0"
             # patch the fstab file and test 
-            with open(self.fstab_file, "a") as fstab_file:
-                fstab_file.write(patch)
+            if not self.args.dry_run:
+                with open(self.fstab_file, "a") as fstab_file:
+                    fstab_file.write(patch)
             print("Testing fstab file. WARNING: do not reboot if this errors, Pi will hang.")
-            do("mount -a")
+            self.do("mount -a")
             self.confirm("press y to continue, x for exit", allow_no=False)
 
+
+    def setup_code(self):
+        print("downloading photobot.py...")
+        self.do("wget https://raw.githubusercontent.com/paddiohara/photobot/master/src/photobot.py")
+
+    def setup_directories(self):
+        if self.confirm("create directory on pi: /home/pi/captures ?"):
+            self.do("mkdir /home/pi/captures")
+        if self.confirm("create directory on USB drive: /mnt/usbstorage/captures ?"):
+            self.do("mkdir /mnt/usbstorage/captures")
+
+
+    def take_test_photo(self):
+        "take a photo with the camera"
+        print("Taking test photo with gphoto2...")
+        self.do("gphoto2 --wait-event=1s --set-config eosremoterelease=2 --wait-event=1s "
+            "--set-config eosremoterelease=4 --wait-event-and-download=2s "
+            "--force-overwrite --get-all-files --delete-all-files "
+            "--filename=/home/pi/captures/test_photo.jpg")
+        print("Moving test photo to /mnt/usbstorage/captures...")
+        self.do("mv /home/pi/captures/test_photo.jpg /mnt/usbstorage/captures/")
+
+
+    def setup_cron(self):
+        patch = "\n* * * * * root python /home/pi/photobot.py"
+        if self.confirm("patching %s with patch: '%s'\n?" % (self.cron_file, patch) ):
+            if not self.args.dry_run:
+                with open(self.cron_file, "a") as cron_file:
+                    cron_file.write(patch)
+        if self.confirm("reload cron to test? "):
+            self.do("restart cron")     
 
 
     # main install process
@@ -130,12 +162,20 @@ class PhotobotInstaller(object):
 
         if self.confirm("Setup USB drive?"):
             self.setup_drive()
-   
-        # left off: 
-        # download photobot script from github
-        # make/check directories
-        # setup cronjob
- 
+  
+        if self.confirm("Download photobot.py from github?"):
+            self.setup_code()
+        
+        if self.confirm("Create directories for captures?"):
+            self.setup_directories()
+        
+        if self.confirm("Take test photo? (Attach and power on camera before continuing) "):
+            self.take_test_photo()
+        
+        if self.confirm("Setup cronjob for capture every minute?"):
+            self.setup_cron()
+        
+        print("\nDONE SETUP\n")
 
 
 if __name__=="__main__":
@@ -144,6 +184,7 @@ if __name__=="__main__":
     parser.add_argument('--dry-run', action="store_true", help="print commands but don't run them")
     parser.add_argument('--wpa-file', help="alternate networking file to patch")
     parser.add_argument('--fstab-file', help="alternate fstab file to patch")
+    parser.add_argument('--cron-file', help="alternate fstab file to patch")
     args = parser.parse_args()
 
     print("running with args: %s" % args)
