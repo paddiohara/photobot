@@ -19,9 +19,6 @@ import logging
 log = logging.getLogger(__name__)
 import pdb
 
-import logging
-log = logging.getLogger(__name__)
-
 # sqlachemy Declarative Base base class for ORM models
 Base = declarative_base()
 
@@ -32,7 +29,7 @@ class Resource(object):
             if hasattr(self, k):
                 setattr(self, k, v)
 
-class PositionMessage(Base, Resource):
+class PositionMessage(Resource, Base):
     "base class/table for position messages of type A and B"
     __tablename__ = 'position_message'
 
@@ -119,7 +116,7 @@ class PositionMessageB(PositionMessage):
 
 
 
-class StaticDataMessage(Base, Resource):
+class StaticDataMessage(Resource, Base):
     "base class/table for status messages of type A and B"
     __tablename__ = 'static_data_message'
 
@@ -202,38 +199,67 @@ class Model(object):
 
     # only messages of these NMEA types get stored
     _types_to_message_class = {
-        '1': PositionMessageA,
-        '2': PositionMessageA,
-        '3': PositionMessageA,
-        '5': StaticDataMessageA,
-        '18': PositionMessageB,
-        '24': StaticDataMessageB,
+        1: PositionMessageA,
+        2: PositionMessageA,
+        3: PositionMessageA,
+        5: StaticDataMessageA,
+        18: PositionMessageB,
+        24: StaticDataMessageB,
     }
 
-    def __init__(self, settings):
+    def __init__(self, settings, logger=None):
+        self.log = logger if logger else log 
+        self.log.info("Model.__init__()")
+
         if 'sqlalchemy.url' not in settings:
             raise Exception("ERROR: model requires a valid db_url in settings")
         self.engine = create_engine(settings['sqlalchemy.url'])
         self.Session = sessionmaker(bind=self.engine)
         # to get an sqlalchemy session, client code will call model.Session()
+        
+        # convert our ini files lat/lon grid to the NMEA format
+        # where lat and lon are in 10000/ths of a min
+        self.min_lon = int( float(settings['minimum_longitude']) * 600000 )
+        self.max_lon = int( float(settings['maximum_longitude']) * 600000 )
+        self.min_lat = int( float(settings['minimum_latitude']) * 600000 )
+        self.max_lat = int( float(settings['maximum_latitude']) * 600000 )
 
+        self.log.info("model settings: min_lat: %s min_lon: %s max_lat: %i max_lon: %i" %
+             (self.min_lat, self.min_lon, self.max_lat, self.max_lon) )
+        self.log.debug("model init complete")
+        
+        
     def init_db(self):
-        log.info("creating tables")
+        self.log.info("creating tables")
         Base.metadata.create_all(self.engine)
 
-    def store_message(self, data):
-        "save an AIS message from data dict"
-        msg_type = data['type']
 
+    def handle_json_message(self, json_msg):
+        "save an AIS message from data dict"
+        data = json.loads(json_msg)
+
+        self.log.debug("model.handle_json_message() data:%s" % data)
+
+        msg_type = data.get('type',None)
         if msg_type not in self._types_to_message_class:
-            # we don't care about this type of message
-            log.debug(" received message: type %s, ignoring")
+            self.log.debug("  - msg type field missing or out of range ignoring")
             return
 
-        dbs = self.Session()
+        # for position messages, (type 1,2,3,18,19) filter on location
+        # TODO: this part needs to be tested properly yo
+        if msg_type in [1,2,3,18,19]:
+            if( data['lat'] < self.min_lat or data['lat'] > self.max_lat or
+              data['lon'] < self.min_lon or data['lon'] > self.max_lon): 
+                self.log.debug(' msg out of position range, ignoring ')
+                return
 
-        log.info("creating message")
-        MessageClass = self._types_to_message_class(msg_type)
+
+        # if we get this far, we have a msg to store as a DB object
+        # NB: static data messages don't have lat/lon so we get them ALL
+
+        dbs = self.Session()
+        MessageClass = self._types_to_message_class[msg_type]
+        self.log.debug("strong message of class: %s" % MessageClass)
         msg = MessageClass(
             datetime = datetime.now(),
             json_message = json.dumps(data),
@@ -241,4 +267,4 @@ class Model(object):
         )
         dbs.add( msg )
         dbs.commit()
-        log.info(" message stored")
+        self.log.debug(" message stored")

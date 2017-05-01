@@ -4,11 +4,13 @@ import argparse
 from configparser import ConfigParser
 import os
 import sys
-
-import pdb
+import time
+import json
+from gps3 import agps3
 
 from ais_model import Model
 
+import pdb
 # required settings, which can come from ini file or command line args
 # db_url                sqlalchemy db connection url
 # minimum_latitude      min latitude in which to capture data
@@ -21,7 +23,7 @@ from ais_model import Model
 def setup_logging(log_level):
     "setup the python logging structure"
     # set up logging, saves output to a log file
-    log = logging.getLogger("ais_receiver")
+    log = logging.getLogger(__name__)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -29,7 +31,6 @@ def setup_logging(log_level):
     log.addHandler(ch)
     log.level = log_level
     return log
-
 
 
 def main():
@@ -57,7 +58,7 @@ def main():
     log = setup_logging(logging.DEBUG)
 
     log.debug("instantiating model")
-    model = Model(settings)
+    model = Model(settings, logger=log)
 
     if options.init_db:
         log.info("Initializing database")
@@ -67,17 +68,19 @@ def main():
 
     log.info("ais_receiver main()")
 
-    # convert our ini files lat/lon grid to the NMEA format
-    # where lat and lon are in 10000/ths of a min
-    min_lon = int( float(settings['minimum_longitude']) * 600000 )
-    max_lon = int( float(settings['maximum_longitude']) * 600000 )
-    min_lat = int( float(settings['minimum_latitude']) * 600000 )
-    max_lat = int( float(settings['maximum_latitude']) * 600000 )
-
-    log.info("min_lat: %s min_lon: %s max_lat: %i max_lon: %i" %
-             (min_lat, min_lon, max_lat, max_lon) )
-
-    # TODO: listen for data, check against the above, store if in range
+    # connect to the gpsd server
+    # TODO: do the right thing if gpsd not on or can't connect 
+    gps_socket = agps3.GPSDSocket()
+    ds = agps3.DataStream()
+    gps_socket.connect()
+    gps_socket.watch()
+    
+    for json_msg in gps_socket:
+        if json_msg:
+            #log.debug("received msg: %s" % json_msg)
+            model.handle_json_message(json_msg)
+    else:
+        time.sleep(.001)
 
 
 if __name__=="__main__":
