@@ -147,6 +147,12 @@ class PhotobotInstaller(object):
             self.do("restart cron")     
 
 
+    def setup_witty(self):
+        print("downloading witty pi installer")
+        self.do("wget http://www.uugear.com/repo/WittyPi/installWittyPi.sh")
+        self.do("sh installWittyPi.sh")
+
+
     # main install process
     def main(self):
         print("Running photobot installer")
@@ -174,7 +180,11 @@ class PhotobotInstaller(object):
         
         if self.confirm("Setup cronjob for capture every minute?"):
             self.setup_cron()
-        
+
+        if self.confirm("Download and install Witty Pi software?"):
+            self.setup_witty()
+
+
         print("\nDONE SETUP\n")
 
 
