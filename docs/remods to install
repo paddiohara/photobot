@@ -44,3 +44,5 @@ At this point, if it ain't broke don't fix it.
 4. also running photobot installer - had a problem with the line "reload cron to test" and when i answered y - it came back with the
 following error - "ERROR executing command: 'resart cron'
 /bin/sh: 1: restart: not found. And camera doesn't start up on it's own after the full install.
+
+5. not clear how to change photo sequence (i.e., frequency of capture for example).
