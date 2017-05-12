@@ -40,3 +40,7 @@ to the fstab. The only problem is that the drive may not always be identified as
 of our system at this stage. If the system becomes more complicated we may wish to create scripted rules such as "mount manager" 
 described in this website: http://solvedforhome.com/?p=2806&v=3e8d115eb4b3
 At this point, if it ain't broke don't fix it. 
+
+4. also running photobot installer - had a problem with the line "reload cron to test" and when i answered y - it came back with the
+following error - "ERROR executing command: 'resart cron'
+/bin/sh: 1: restart: not found. And camera doesn't start up on it's own after the full install.
