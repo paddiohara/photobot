@@ -34,3 +34,9 @@ while running photobot_install.py script - mostly straightforward until you set 
 not clear what it's looking for - /dev/sda1 or UUID or PARTUUID
 also - if this is a permanent device id, will this cause problems when we swap out usb hard-drives? (i.e., does this do something 
 permanent to the fstab?)
+i've read that a potential solution for automounting a USB storage is to add the line:
+/dev/sda1      /mnt/data    ext3      defaults      0      0
+to the fstab. The only problem is that the drive may not always be identified as /dev/sda1. I am okay with this because of the simplicity
+of our system at this stage. If the system becomes more complicated we may wish to create scripted rules such as "mount manager" 
+described in this website: http://solvedforhome.com/?p=2806&v=3e8d115eb4b3
+At this point, if it ain't broke don't fix it. 
