@@ -46,3 +46,8 @@ following error - "ERROR executing command: 'resart cron'
 /bin/sh: 1: restart: not found. And camera doesn't start up on it's own after the full install.
 
 5. not clear how to change photo sequence (i.e., frequency of capture for example).
+
+6.  decided to run photobot.py on its own to see if it work. It did but didn't save because there was a problem with the permission 
+settings for the /home/pi/captures folder - permission was denied and no photos saved (though the camera was activated three times). 
+when i changed permssion to this folder (chmod 777) and reran photobot.py again, there was no issue - and it moved the files 
+from /home/pi/captures to /dev/usbstorage/captures. 
