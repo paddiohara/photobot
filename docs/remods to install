@@ -1,0 +1,30 @@
+I prefer to set up the wifi after copying the image file to the sd card - after this is done, I edit the 
+etc/network/interfaces file to include:
+
+auto lo
+iface lo inet loopback
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+
+iface default inet dhcp
+
+and the etc/wpa_supplicant/wpa_supplicant.conf to include:
+
+country=GB
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+  ssid="AT_HOME"
+  psk="SUPERSECRET"
+  }
+
+
+also the wget doesn't work with the current locator as indicated in instruction sheet 
+(https://github/paddiohar/photobot/blob/master/photobot_install.py) - all you get is a bunch of html code
+in the newly created photobot_install.py so I simply copied the contents of the photobot_install.py on the 
+github page and pasted into a blank photobot_install.py using the nano editor
+this new photobot_install.py seems to work fine.
+
