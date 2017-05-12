@@ -1,3 +1,4 @@
+1. 
 I prefer to set up the wifi after copying the image file to the sd card - after this is done, I edit the 
 etc/network/interfaces file to include:
 
@@ -21,10 +22,15 @@ network={
   psk="SUPERSECRET"
   }
 
-
+2.
 also the wget doesn't work with the current locator as indicated in instruction sheet 
 (https://github/paddiohar/photobot/blob/master/photobot_install.py) - all you get is a bunch of html code
 in the newly created photobot_install.py so I simply copied the contents of the photobot_install.py on the 
 github page and pasted into a blank photobot_install.py using the nano editor
 this new photobot_install.py seems to work fine.
 
+3. 
+while running photobot_install.py script - mostly straightforward until you set up USB drive and it asks for "Enter drive number:"
+not clear what it's looking for - /dev/sda1 or UUID or PARTUUID
+also - if this is a permanent device id, will this cause problems when we swap out usb hard-drives? (i.e., does this do something 
+permanent to the fstab?)
