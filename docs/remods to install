@@ -51,3 +51,9 @@ following error - "ERROR executing command: 'resart cron'
 settings for the /home/pi/captures folder - permission was denied and no photos saved (though the camera was activated three times). 
 when i changed permssion to this folder (chmod 777) and reran photobot.py again, there was no issue - and it moved the files 
 from /home/pi/captures to /dev/usbstorage/captures. 
+
+7. IMPORTANT step - crontab won't work unless you change the first six on the following line to an *:
+25 6    * * * root text -x/usr/sbin/anacron || (cd / && run-parts --report /etc/cron.daily)
+becomes -
+25 *    * * * root text -x/usr/sbin/anacron || (cd / && run-parts --report /etc/cron.daily)
+
