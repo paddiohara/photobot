@@ -93,8 +93,9 @@ Download the Installer
 ----------------------
   - ssh into the pi
   - execute:
-    wget https://github.com/paddiohara/photobot/blob/master/photobot_installer.py  
+    wget https://raw.github.com/paddiohara/photobot/master/photobot_installer.py  
   - you should now see the python script "photbot_installer.py"
+   - there are a few bugs yet to be worked out here 
 
 
 Run the Installer
