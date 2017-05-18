@@ -48,17 +48,17 @@ Download Raspbian Jessie Lite
 Burn image on the SD card:
   - put the SD card in your card reader and plug it into the USB port on your host
   - find out the disk number of SD card by opening a terminal and executing:
-    $ diskutil list
+    $ fdisk -l
   - look for the entry that matches the size of your card (so we know it's not your host hard drive)
-  - for this example, on our machine it was: /dev/disk2
+  - for this example, on our machine it was: /dev/sdc
   - unmount that disk: 
-    $ diskutil unmountDisk /dev/disk2
+    $ umount /dev/sdc
   - copy or move the image you downloaded to the current directory, and execute
     the following to copy that image onto your sd card
-    $ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/rdisk2
+    $ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/sdc
   - note that in the above command, you must replace the name of the image file with your image
-    and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
-    Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
+    and /dev/rdisk2 with /dev/X where X is your disk name 
+    
 
 Alter the image to enable SSH
   - as of 2017, Raspbian now disables SSH by default for security so we need to alter the image
@@ -67,7 +67,8 @@ Alter the image to enable SSH
     the card reader, as "Boot"
   - we need to put an empty file called 'ssh' in to the boot directory
   - in a terminal on your host, cd into the boot directory and execute:
-    $ sudo touch ssh
+    $ sudo nano ssh
+  - save using command ^O then exit ^X
   - check that it worked:
     $ ls 
     - you should see the file called 'ssh' in there
@@ -78,6 +79,7 @@ Load into Pi
   - boot the Pi
   - on your host, find ip address of the pi using a portscanning application 
     - on OSX we used the application "ipscan" (free download)
+  - for MS Putty.exe works really well
   - once we have the IP, we can ssh in to the pi from the host using username 'pi', password 'raspberry'
     $ ssh pi@192.168.1.68  
   - you are now on the Pi and will see a security warning message to change your password
