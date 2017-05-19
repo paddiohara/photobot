@@ -67,8 +67,8 @@ reason) - is there some way we can change this? When I log on to my router I can
 and there is no IP. I'd like to be able to log onto the pi remotely to fix things potentially but can't if it hangs on boot. I've added
 the following to the latest install of photobot to hopefully minimize DNS failure:
     sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
-and I've added the following software as an alternative means of connecting than SSH
-   sudo apt-get install xrdp
 I got this (with instructions) from the following URL:
   https://raspberrypi.stackexchange.com/questions/13861/setting-up-ssh-over-internet-on-my-pi
- 
+  
+ 10. In lieu of WittyPi i went back and installed DS3231 RTC on first five pins:
+ https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=161133
