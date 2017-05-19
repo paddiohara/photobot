@@ -1,3 +1,6 @@
+
+IMPORTANT - change password of sudo from raspberry!!
+
 1. 
 I prefer to set up the wifi after copying the image file to the sd card - after this is done, I edit the 
 etc/network/interfaces file to include:
