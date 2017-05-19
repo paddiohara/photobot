@@ -57,3 +57,8 @@ from /home/pi/captures to /dev/usbstorage/captures.
 becomes -
 25 *    * * * root text -x/usr/sbin/anacron || (cd / && run-parts --report /etc/cron.daily)
 
+8. WittyPi may not be a good solution because it is sensitive to power fluctuations. Also - if power is killed during cycle it can lock. 
+
+9. Wifi won't connect to router unless camera and usbstorage are connected. is there some way we can change this? in particular - the 
+address can be seen but hostname and IP unresolved. some kind of DNS failure. Not sure why plugging in camera/usbstorage helps resolve this.
+
