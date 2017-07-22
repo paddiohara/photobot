@@ -1,0 +1,84 @@
+AIS notes:
+Automatic Identification System
+
+https://en.wikipedia.org/wiki/Automatic_identification_system
+
+- base station is used to track position of the vessels with AIS tranceivers
+
+From wikipedia:
+
+Class A units: (large commercial vessels)
+An AIS transceiver sends the following data every 2 to 10 seconds depending
+on a vessel's speed while underway, and every 3 minutes while a vessel is at anchor:
+
+- The vessel's Maritime Mobile Service Identity (MMSI) – a unique nine digit identification number.
+- Navigation status – "at anchor", "under way using engine(s)", "not under command", etc.
+- Rate of turn – right or left, from 0 to 720 degrees per minute
+- Speed over ground – 0.1-knot (0.19 km/h) resolution from 0 to 102 knots (189 km/h)
+- Positional accuracy:
+    - Longitude – to 0.0001 minutes
+    - Latitude – to 0.0001 minutes
+- Course over ground – relative to true north to 0.1°
+- True heading – 0 to 359 degrees (for example from a gyro compass)
+- True bearing at own position. 0 to 359 degrees
+- UTC Seconds – The seconds field of the UTC time when these data were generated.
+  A complete timestamp is not present.
+
+In addition, the following data are broadcast every 6 minutes:
+- IMO ship identification number – a seven digit number that remains unchanged upon 
+  transfer of the ship's registration to another country
+- Radio call sign – international radio call sign, up to seven characters, 
+  assigned to the vessel by its country of registry
+- Name – 20 characters to represent the name of the vessel
+- Type of ship/cargo
+- Dimensions of ship – to nearest meter
+- Location of positioning system's (e.g., GPS) antenna on board the vessel 
+  - in meters aft of bow and meters port or starboard
+- Type of positioning system – such as GPS, DGPS or LORAN-C.
+- Draught of ship – 0.1 meter to 25.5 meters
+- Destination – max. 20 characters
+- ETA (estimated time of arrival) at destination – UTC month/date hour:minute
+- optional : high precision time request, a vessel can request other vessels provide
+  a high precision UTC time and datestamp
+
+
+Class B (ligher commercial, leisure)
+Four messages are defined for class B units:
+
+- Message 14 Safety Related Message: 
+  This message is transmitted on request for the user some transceivers have a button 
+  that enables it to be sent, or it can be sent through 
+  the software interface. It sends a pre-defined safety message.
+
+- Message 18: Standard Class B CS Position Report: This message is sent every 3 minutes
+  where speed over ground (SOG) is less than 2 knots, or every 30 seconds for greater
+  speeds. MMSI, time, SOG, COG, longitude, latitude, true heading
+
+- Message 19, Extended Class B Equipment Position Report: 
+  This message was designed for the SOTDMA protocol, and is too long to be transmitted 
+  as CSTDMA. However a coast station can poll the transceiver for this message to be 
+  sent. MMSI, time, SOG, COG, longitude, latitude, true heading, ship type, dimensions.
+
+- Message 24 Class B CS Static Data Report: 
+  This message is sent every 6 minutes, the same time interval as for Class A transponders.
+  Because of its length, this message is divided into two parts, sent within one minute
+  of each other. This message was defined after the original AIS specifications, so some 
+  Class A units may need a firmware upgrade to be able to decode this message. MMSI, boat
+  name, ship type, call sign, dimensions, and equipment vendor id.
+
+
+NMEA 1083
+- data is transmitted using the NMEA 1083 protocal
+- from wikipedia: There is a variation of the standard called NMEA-0183HS that specifies a baud rate of 38,400. This is in general use by AIS devices.
+- digital yacht has a "Digital Yachts NMEA Data Display Program" we can use to see if there is any raw NMEA data coming out of the AISNet
+  - only exists on windows
+- look for one on OSX
+
+Useful discussion
+http://www.laptopgpsworld.com/4426-using-gps-nmea-data-create-navigation-apps
+- from there: drivers job is just to make USB port act like a COM port
+
+- to google: receive USB NMEA 1083 traffic on linux
+- macenc software for sniffing the data on os x http://macenc.com/h/macenc/connectinggps.htm
+
+

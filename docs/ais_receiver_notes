@@ -1,0 +1,37 @@
+Notes on our AIS receiver:
+
+we have a Digital Yacht AISNET AIS Base Station Receiver part number ZDIGAISNET
+http://www.digitalyachtamerica.com/index.php/en/products/ais-systems/ais-receivers/product/38-aisnet-internet-base-station
+
+From the Digital Yacht site:
+
+Network enabled AIS receiver for base station operation. Simple RJ45 network interface and USB too. Perfect for use with Marine Traffic or AIS Live”"
+- what is AIS Live?
+- can be used to send data to online AIS tracking services
+- "Data that AISnet is collecting, can also be viewed locally on your PC using the free
+  SmarterTrack Lite software. Plug the USB connector into your PC and AIS data will appear on your PC, 
+  whilst also transmitting over the internet."
+
+Drivers:
+http://www.digitalyachtamerica.com/index.php/en/support/support-manuals/utilities
+
+From digitial yacht:
+"The drivers for the USB connection will work with the MAC. You can use NavLink and MacENC software too to view locally"
+- navlink is DY's plotting software, looks like we can plug the AISNet right into it? it's $30.00
+
+DY have tech support notes here: 
+http://www.digitalyachtamerica.com/index.php/en/support/support-manuals/support-technotes
+see note: How to install the USB to NMEA Interface Mac OsX drivers 
+
+On the DY utilities page there is a download for a 
+Simple NMEA0183 Display program that allows you to display raw and formatted NMEA0183 data on your Windows PC, ideal for diagnostics
+http://www.digitalyachtamerica.com/index.php/en/support/support-manuals/utilities
+
+Found the Mac drivers here:
+http://www.digitalyachtamerica.com/index.php/en/support/support-manuals/utilities
+
+Figured out:
+- the AISNet uses Digital Yacht's USB-to-NMEA0138 adapter, and the software
+  reads the NMEA stream
+- get that working on OSX first and examine the data
+- ask DY about a linux USB to NMEA converter
