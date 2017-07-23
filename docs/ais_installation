@@ -1,0 +1,77 @@
+Installing the AIS bot
+======================
+
+The ais receiver script listens to a socket provided by the gpsd daemon, and stores
+messages in a local sqllite db, with settings coming from a standard ini file.
+
+This means that both the gpsd daemon and the ais script will need to be added
+to the boot runlevel on the Pi.
+
+The gpsd needs to know the device of the antenna, so we'll want to find that out
+before running the script for starting gpsd.
+
+Installing GPSD
+===============
+- install gpsd on the pi:
+  $ sudo apt-get install gpsd
+
+- find out what device the antenna is:
+  - run dmesg, without antenna plugged in
+  $ sudo dmesg 
+  - plug in antenna
+  - run dmesg again, look for the output change of the newly discovered 
+    device, on my box it was /dev/ttyACM0
+
+- start gpsd in the foreground to verify it's working:
+   gpsd -D 5 -N -n /dev/ttyACM0 
+- you should see messages
+
+- look up how to start it without the chatty logging, I think it's just the below,
+  but this might be still for foreground, check the gpsd docs
+  $ gpsd -N -n /dev/ttyACM0
+
+
+Installing Python Dependencies
+==============================
+- the photbot env already exists on the bots, so we can just add dependencies on that
+  - activate the env
+  $ source env/bin/activate
+  - install gps3, sqlalchemy, sqlite
+  $ pip install sqlalchemy gps3 sqlite
+
+
+Running the Python script, testing
+==================================
+- the script takes a settings file, edit the settings file to point the 
+  sqlite url to a path on the usb drive for more space
+- run the script to init the db
+  $ env/bin/python ais_receiver.py --settings ais_receiver.ini --init-db
+  - verify a sqlite file now exists in the path
+- run the script in the foreground to see messages
+  $ env/bin/python ais_receiver.py --settings ais_receiver.ini
+  - you should see messages about events being stored
+  - log on with sqlite to verify message storage
+
+
+Running the ais_receiver script for realz
+========================================= 
+- edit the ais_receiver.py file to change log level from DEBUG to INFO
+- run script in background mode
+  $ env/bin/python ais_receiver.py --settings ais_receiver.ini &
+- verify works by checking sqlite
+  (TODO look up how to do this, nev knows)
+- create linux run level job to make sure this works on boot
+
+Ais receiver, shell mode
+========================
+- if you run the ais receiver with --shell, it will drop into pdb
+  instead of polling the socket, so you can run sqlalchemy queries 
+  against the db
+
+
+Tricky stuff to check
+=====================
+- I'm not sure what the best way to make gpsd and the script run in
+ the background on boot is. Linux docs should tell you!
+- we should see how fast that db file grows. it should prob be on the
+  USB drive
