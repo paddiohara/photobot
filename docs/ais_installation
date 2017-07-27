@@ -10,6 +10,12 @@ to the boot runlevel on the Pi.
 The gpsd needs to know the device of the antenna, so we'll want to find that out
 before running the script for starting gpsd.
 
+>>>> addition by Patrick - need to install python-dev in order to use virtualenv as per below. steps for install are:
+  sudo apt-get install python-dev
+  sudo curl -O https://bootstrap.pypa.io/get-pip.py
+  sudo python get-pip.py
+  sudo pip install virtualenv
+
 Installing GPSD
 ===============
 - install gpsd on the pi:
@@ -38,6 +44,12 @@ Installing Python Dependencies
   $ source env/bin/activate
   - install gps3, sqlalchemy, sqlite
   $ pip install sqlalchemy gps3 sqlite
+
+NOTE from Patrick - this pip install fails for me for sqlite - this is the work around that has worked for me:
+    sudo apt update
+    sudo apt install sqlite3
+              You can then verify it is installed and its version with the following command:
+     sqlite3 --version
 
 
 Running the Python script, testing
