@@ -46,6 +46,9 @@ Download Raspbian Jessie Lite
 
 
 Burn image on the SD card:
+  - if SD card has partitions in it already - delete partitions using fdisk and create primary partition ONLY - make sure you 
+     use w to save changes before quitting fdisk
+              -image file will come with partitions
   - put the SD card in your card reader and plug it into the USB port on your host
   - find out the disk number of SD card by opening a terminal and executing:
     $ fdisk -l
@@ -55,9 +58,10 @@ Burn image on the SD card:
     $ umount /dev/sdc
   - copy or move the image you downloaded to the current directory, and execute
     the following to copy that image onto your sd card
-    $ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/sdc
+    $ sudo dd bs=1M if=2017-01-11-raspbian-jessie-lite.img of=/dev/sdc
   - note that in the above command, you must replace the name of the image file with your image
     and /dev/rdisk2 with /dev/X where X is your disk name 
+    
     
 
 Alter the image to enable SSH
