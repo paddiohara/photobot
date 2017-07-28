@@ -10,11 +10,10 @@ to the boot runlevel on the Pi.
 The gpsd needs to know the device of the antenna, so we'll want to find that out
 before running the script for starting gpsd.
 
->>>> addition by Patrick - need to install python-dev in order to use virtualenv as per below. steps for install are:
+>>>> Note from Nev We shouldn't need to install virtualenv after all. Installing pip is below
   sudo apt-get install python-dev
   sudo curl -O https://bootstrap.pypa.io/get-pip.py
   sudo python get-pip.py
-  sudo pip install virtualenv
 
 Installing GPSD
 ===============
@@ -32,18 +31,21 @@ Installing GPSD
    gpsd -D 5 -N -n /dev/ttyACM0 
 - you should see messages
 
-- look up how to start it without the chatty logging, I think it's just the below,
-  but this might be still for foreground, check the gpsd docs
-  $ gpsd -N -n /dev/ttyACM0
+-  start it in background without the chatty logging (-N option which makes it run in foreground ommitted here)
+  $ gpsd -n /dev/ttyACM0
+  
+ 
+For whatever reason the default gpsd installation scheme doesn't work for us when it boots automatically so we need to disable that
+We'll enable it on boot further down. 
 
+edit  /etc/default/gpsd
+and set: START_DAEMON="false" 
 
 Installing Python Dependencies
 ==============================
-- the photbot env already exists on the bots, so we can just add dependencies on that
-  - activate the env
-  $ source env/bin/activate
+
   - install gps3, sqlalchemy, sqlite
-  $ pip install sqlalchemy gps3 sqlite
+  $ pip install sqlalchemy gps3 sqlite configparser
 
 NOTE from Patrick - this pip install fails for me for sqlite - this is the work around that has worked for me:
     sudo apt update
@@ -57,10 +59,10 @@ Running the Python script, testing
 - the script takes a settings file, edit the settings file to point the 
   sqlite url to a path on the usb drive for more space
 - run the script to init the db
-  $ env/bin/python ais_receiver.py --settings ais_receiver.ini --init-db
+  $ python ais_receiver.py --settings ais_receiver.ini --init-db
   - verify a sqlite file now exists in the path
 - run the script in the foreground to see messages
-  $ env/bin/python ais_receiver.py --settings ais_receiver.ini
+  $ python ais_receiver.py --settings ais_receiver.ini
   - you should see messages about events being stored
   - log on with sqlite to verify message storage
 
@@ -69,7 +71,7 @@ Running the ais_receiver script for realz
 ========================================= 
 - edit the ais_receiver.py file to change log level from DEBUG to INFO
 - run script in background mode
-  $ env/bin/python ais_receiver.py --settings ais_receiver.ini &
+  $ python ais_receiver.py --settings ais_receiver.ini &
 - verify works by checking sqlite
   (TODO look up how to do this, nev knows)
 - create linux run level job to make sure this works on boot
@@ -87,3 +89,18 @@ Tricky stuff to check
  the background on boot is. Linux docs should tell you!
 - we should see how fast that db file grows. it should prob be on the
   USB drive
+  
+  
+Starting Processes on Boot
+=======================
+NEV's method:
+Install both processes into the root user's crontab.
+There are other methods but this seems cleanest / easiest in this case sincecrontab rules seem to work the same across all linux flavours.
+
+$ sudo su root
+$ crontab -e (may need to pick your favorite text editor here)
+add at the bottom of the file:
+
+@reboot gpsd -n /dev/ttyACM0  
+@reboot python /home/pi/ais_receiver.py --settings /home/pi/ais_receiver.ini &
+
