@@ -78,7 +78,10 @@ def main():
     for json_msg in gps_socket:
         if json_msg:
             #log.debug("received msg: %s" % json_msg)
-            model.handle_json_message(json_msg)
+            try:
+                model.handle_json_message(json_msg)
+            except:
+                pass
     else:
         time.sleep(.001)
 
