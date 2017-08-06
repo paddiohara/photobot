@@ -10,6 +10,8 @@ import logging
 
 # length of one sequence of photos
 NUM_PHOTOS = 3
+NUM_ROUNDS = 2
+ROUND_DELAY = 30
 
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
@@ -70,31 +72,34 @@ if __name__=="__main__":
    
     # done process housekeeping 
 
-    # take the pictures
-    for i in range(0,NUM_PHOTOS):
-        filename = get_photo_filename() 
-        local_filepath = "/home/pi/captures/%s" % filename
-        ext_filepath = "/mnt/usbstorage/captures/%s" % filename
+    # take two rounds of pictures, separated by 30 seconds 
+    for i in range(0, NUM_ROUNDS):
 
-        # NB: no sleep necessary, time delay is in the command
-        # NB: this long form with eosremotereleases is the ONLY version that has worked reliably
-        # for the camera, the simpler version you can find online hung frequently for us
-        photo_command = ("gphoto2 --wait-event=1s --set-config eosremoterelease=2 --wait-event=1s "
-            " --set-config eosremoterelease=4 --wait-event-and-download=2s --filename=%s "
-            "--force-overwrite --get-all-files --delete-all-files" % local_filepath)
-       
-        try: 
-            output = subprocess.check_output(photo_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
-            log.info("captured photo: %s" % filename)
-        except subprocess.CalledProcessError as exc: 
-            log.info("ERROR capturing photo: '%s'" % exc.output)
+        for i in range(0,NUM_PHOTOS):
+            filename = get_photo_filename() 
+            local_filepath = "/home/pi/captures/%s" % filename
+            ext_filepath = "/mnt/usbstorage/captures/%s" % filename
 
-        # move the file from pi to usb drive
-        move_command = "mv %s %s" % (local_filepath, ext_filepath)
-        try:
-            output = subprocess.check_output(move_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
-            log.info("image moved to %s" % ext_filepath)
-        except subprocess.CalledProcessError as exc: 
-            log.info("ERROR moving image: '%s'" % exc.output)
+            # NB: no sleep necessary, time delay is in the command
+            # NB: this long form with eosremotereleases is the ONLY version that has worked reliably
+            # for the camera, the simpler version you can find online hung frequently for us
+            photo_command = ("gphoto2 --wait-event=1s --set-config eosremoterelease=2 --wait-event=1s "
+                " --set-config eosremoterelease=4 --wait-event-and-download=2s --filename=%s "
+                "--force-overwrite --get-all-files --delete-all-files" % local_filepath)
+           
+            try: 
+                output = subprocess.check_output(photo_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                log.info("captured photo: %s" % filename)
+            except subprocess.CalledProcessError as exc: 
+                log.info("ERROR capturing photo: '%s'" % exc.output)
 
-    
+            # move the file from pi to usb drive
+            move_command = "mv %s %s" % (local_filepath, ext_filepath)
+            try:
+                output = subprocess.check_output(move_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                log.info("image moved to %s" % ext_filepath)
+            except subprocess.CalledProcessError as exc: 
+                log.info("ERROR moving image: '%s'" % exc.output)
+
+        # sleep until next round
+        time.sleep( ROUND_DELAY )
