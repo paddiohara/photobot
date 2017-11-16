@@ -57,7 +57,9 @@ NOTE from Patrick - this pip install fails for me for sqlite - this is the work 
 Downloading Python Script
 ===================================
  wget https://raw.github.com/paddiohara/photobot/master/src/ais_receiver.ini
- wget https://raw.github.com/paddiohara/photobot/master/src/ais_receiver.p
+ wget https://raw.github.com/paddiohara/photobot/master/src/ais_receiver.py
+ wget https://raw.github.com/paddiohara/photobot/master/src/ais_model.py
+ 
 
 Running the Python script, testing
 ==================================
