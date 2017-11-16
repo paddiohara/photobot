@@ -52,7 +52,12 @@ NOTE from Patrick - this pip install fails for me for sqlite - this is the work 
     sudo apt install sqlite3
               You can then verify it is installed and its version with the following command:
      sqlite3 --version
+ 
 
+Downloading Python Script
+===================================
+ wget https://raw.github.com/paddiohara/photobot/master/src/ais_receiver.ini
+ wget https://raw.github.com/paddiohara/photobot/master/src/ais_receiver.p
 
 Running the Python script, testing
 ==================================
