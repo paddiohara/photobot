@@ -14,6 +14,9 @@ before running the script for starting gpsd.
   sudo apt-get install python-dev
   sudo curl -O https://bootstrap.pypa.io/get-pip.py
   sudo python get-pip.py
+>>>> Note from Patrick - the ais script is set up to run on python3 so pip should be pip3
+  sudo apt-get install python3-pip 
+    > will modify following pip commands to reflect this
 
 Installing GPSD
 ===============
@@ -45,7 +48,7 @@ Installing Python Dependencies
 ==============================
 
   - install gps3, sqlalchemy, sqlite
-  $ pip install sqlalchemy gps3 sqlite configparser
+  $ pip3 install sqlalchemy gps3 sqlite configparser
 
 NOTE from Patrick - this pip install fails for me for sqlite - this is the work around that has worked for me:
     sudo apt update
@@ -66,6 +69,8 @@ Running the Python script, testing
 - the script takes a settings file, edit the settings file to point the 
   sqlite url to a path on the usb drive for more space
 - run the script to init the db
+  >>> don't forget to change file path in ais_receiver.ini to
+   "sqlite:////mnt/usbstorage/ais/ais_receiver.db"
   $ python ais_receiver.py --settings ais_receiver.ini --init-db
   - verify a sqlite file now exists in the path
 - run the script in the foreground to see messages
