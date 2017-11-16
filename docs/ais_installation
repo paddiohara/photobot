@@ -93,14 +93,11 @@ Tricky stuff to check
   
 Starting Processes on Boot
 =======================
-NEV's method:
-Install both processes into the root user's crontab.
-There are other methods but this seems cleanest / easiest in this case sincecrontab rules seem to work the same across all linux flavours.
+sudo nano into /etc/rc.local and add the lines (before the last line with "exit 0"):
 
-$ sudo su root
-$ crontab -e (may need to pick your favorite text editor here)
-add at the bottom of the file:
+gpsd -n /dev/ttyACM0
 
-@reboot gpsd -n /dev/ttyACM0  
-@reboot python /home/pi/ais_receiver.py --settings /home/pi/ais_receiver.ini &
+sleep 2
+
+python3 /home/pi/ais_receiver.py --settings /home/pi/ais_receiver.ini >> /mnt/usbstorage/ais/ais_receiver_log  2>&1 &
 
