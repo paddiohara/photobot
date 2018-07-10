@@ -116,3 +116,13 @@ add at the bottom of the file:
 @reboot gpsd -n /dev/ttyACM0  
 @reboot python /home/pi/ais_receiver.py --settings /home/pi/ais_receiver.ini &
 
+>>> Instead of Nev's method above we are currently using Iain's method as follows:
+Starting Processes on Boot
+=======================
+sudo nano into /etc/rc.local and add the lines (before the last line with "exit 0"):
+
+gpsd -n /dev/ttyACM0
+
+sleep 2
+
+python3 /home/pi/ais_receiver.py --settings /home/pi/ais_receiver.ini >> /mnt/usbstorage/ais/ais_receiver_log  2>&1 &
