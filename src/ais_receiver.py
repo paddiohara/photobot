@@ -68,6 +68,9 @@ def main():
 
     log.info("ais_receiver main()")
 
+    # wait for five seconds to let gpsd settle down
+    time.sleep(5)
+
     # connect to the gpsd server
     # TODO: do the right thing if gpsd not on or can't connect 
     gps_socket = agps3.GPSDSocket()
@@ -78,7 +81,10 @@ def main():
     for json_msg in gps_socket:
         if json_msg:
             #log.debug("received msg: %s" % json_msg)
-            model.handle_json_message(json_msg)
+            try:
+                model.handle_json_message(json_msg)
+            except:
+                pass
     else:
         time.sleep(.001)
 

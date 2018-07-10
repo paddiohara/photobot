@@ -121,4 +121,13 @@ Run the Installer
 - If you would like explanations of what the installer is doing, see the companion
   file to this one, "photobot_instructions_2017", in which each step is detailed
   for manual entry
+  
+  IMPORTANT --
+  ensure that photobot.py installed by installer has these first set of lines (for photo bursts at less than one minute):
+  
+  # length of one sequence of photos
+NUM_PHOTOS = 3
+NUM_ROUNDS = 2
+ROUND_DELAY = 15
+
 
