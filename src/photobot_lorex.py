@@ -125,8 +125,7 @@ if __name__=="__main__":
     for i in range(0, NUM_ROUNDS):
         for i in range(0, NUM_PHOTOS):
             filename = get_photo_filename() 
-            #local_filepath = "/home/pi/captures/%s" % filename
-            local_filepath = "captures/%s" % filename
+            local_filepath = "~/%s" % filename
             ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
             # save capture from camera
             lorex_cam.save_image(local_filepath)
