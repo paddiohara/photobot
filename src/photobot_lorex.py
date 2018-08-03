@@ -13,7 +13,6 @@ TODO/Sort out
 import subprocess
 from datetime import datetime
 import time
-import sys
 import os
 import logging
 from lorex import LorexCam
@@ -108,12 +107,12 @@ if __name__=="__main__":
             # save capture from camera
             lorex_cam.save_image(local_filepath)
             # move the file from pi to usb drive
-            #move_command = "mv %s %s" % (local_filepath, ext_filepath)
-            #try:
-            #    output = subprocess.check_output(move_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
-            #    log.info("image moved to %s" % ext_filepath)
-            #except subprocess.CalledProcessError as exc:
-            #    log.info("ERROR moving image: '%s'" % exc.output)
+            move_command = "mv %s %s" % (local_filepath, ext_filepath)
+            try:
+                output = subprocess.check_output(move_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                log.info("image moved to %s" % ext_filepath)
+            except subprocess.CalledProcessError as exc:
+                log.info("ERROR moving image: '%s'" % exc.output)
             time.sleep(PICTURE_DELAY)
 
         # sleep until next round
