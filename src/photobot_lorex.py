@@ -15,6 +15,7 @@ import subprocess
 from datetime import datetime
 import time
 import os
+import sys
 import logging
 from lorex import LorexCam
 
@@ -23,10 +24,12 @@ from lorex import LorexCam
 
 # length of one sequence of photos
 NUM_PHOTOS = 3
-NUM_ROUNDS = 2
+#NUM_ROUNDS = 2
+NUM_ROUNDS = 1
 #ROUND_DELAY = 30
 ROUND_DELAY = 5
 PICTURE_DELAY = 3
+
 # the below will be a symlink to where we want captures
 CAPTURE_DIR = "/var/captures"
 # WSDL dir for the lorex lib
@@ -61,9 +64,17 @@ def setup_logging(log_filepath, log_level=logging.INFO):
     log.level = log_level
     return log
 
-
+################################################################################
 # beginning of main execution
 if __name__=="__main__":
+
+    # check if system has been up for a minute, if not, exit
+    # this is to make sure our housekeeper has finished its job first
+    uptime_str = subprocess.check_output("uptime -p",
+        stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+    # when uptime is less than 1 minute, the output is just "up"
+    if uptime_str.strip() == "up":
+        sys.exit()
 
     # set file path and log level for logging
     try:
