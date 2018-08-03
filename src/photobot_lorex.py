@@ -6,9 +6,10 @@ Lorex Camera version of photobot
 TODO/Sort out
 - python 2.7 only
 - we need the wsdl dir
-- we need the network location
-
+- we need the network location for the lorex, we might
+  need to scan for that??
 """
+
 
 import subprocess
 from datetime import datetime
@@ -18,12 +19,24 @@ import logging
 from lorex import LorexCam
 
 
+# TODO: move all this stuff into an ini file!
+
 # length of one sequence of photos
 NUM_PHOTOS = 3
 NUM_ROUNDS = 2
 #ROUND_DELAY = 30
 ROUND_DELAY = 5
 PICTURE_DELAY = 3
+# the below will be a symlink to where we want captures
+CAPTURE_DIR = "/var/captures"
+# WSDL dir for the lorex lib
+WSDL_DIR = "/home/pi/master/env/wsdl"
+# network host for the camera
+LOREX_HOST = "192.168.0.101"
+LOREX_PORT = 80
+LOREX_USER = 'admin'
+LOREX_PASSWORD = 'admin'
+
 
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
@@ -90,11 +103,11 @@ if __name__=="__main__":
     # instantiate our lorex camera
     # these settings could come from env variables. How will we get the network address??
     lorex_cam = LorexCam(
-        host = '192.168.1.65',
-        port = 80,
-        user = 'admin',
-        password = 'admin',
-        wsdl_dir = '/Users/iainduncan/Sites/patrick/lorex/env/wsdl/'
+        host = LOREX_HOST,
+        port = LOREX_PORT,
+        user = LOREX_USER,
+        password = LOREX_PASSWORD,
+        wsdl_dir = WSDL_DIR
     )
 
     # take two rounds of pictures, separated by 30 seconds 
@@ -103,7 +116,7 @@ if __name__=="__main__":
             filename = get_photo_filename() 
             #local_filepath = "/home/pi/captures/%s" % filename
             local_filepath = "captures/%s" % filename
-            ext_filepath = "/mnt/usbstorage/captures/%s" % filename
+            ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
             # save capture from camera
             lorex_cam.save_image(local_filepath)
             # move the file from pi to usb drive
