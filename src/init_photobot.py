@@ -21,8 +21,8 @@ import logging
 log = logging.getLogger(__name__)
 
 USB_DEV = "/dev/sda1"
-USB_DIR = "/mnt/usbstorage/captures"
-SD_DIR = "/home/pi/captures"
+USB_DIR = "/mnt/usbstorage"
+SD_DIR = "/home/pi"
 
 def setup_logging(log_filepath, log_level=logging.INFO):
     # set up logging, saves output to a log file
@@ -71,10 +71,11 @@ if __name__=="__main__":
         log.info("Mount of usb drive failed, falling back to SD card")
         notify_mount_failed()
         # make the symlink to local dir
-        os.system("ln -s %s /var/captures" % SD_DIR)
+        os.system("mkdir %s/captures" % SD_DIR)
+        os.system("ln -s %s/captures /var/captures" % SD_DIR)
     else:
         log.info("USB drive mounted.")
-        os.system("ln -s %s /var/captures" % USB_DIR)
+        os.system("ln -s %s/captures /var/captures" % USB_DIR)
 
     # public permissions on our symlink
     os.system("chmod a+rw /var/captures")
