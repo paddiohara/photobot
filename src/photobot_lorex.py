@@ -44,7 +44,7 @@ LOREX_PASSWORD = 'admin'
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
     time_str = str(datetime.now()).split('.')[0].replace(' ','_').replace(':','-')
-    filename = 'capture_%s.jpg' % time_str 
+    filename = 'lx_capture_%s.jpg' % time_str
     return filename
 
 
