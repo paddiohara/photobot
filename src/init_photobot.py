@@ -20,9 +20,9 @@ import subprocess
 import logging
 log = logging.getLogger(__name__)
 
-USB_DEV = "/dev/sd??"
+USB_DEV = "/dev/sd1"
 USB_DIR = "/mnt/usbstorage"
-SD_DIR = ""
+SD_DIR = "/home/pi/captures"
 
 def setup_logging(log_filepath, log_level=logging.INFO):
     # set up logging, saves output to a log file
