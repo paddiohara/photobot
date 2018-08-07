@@ -60,6 +60,9 @@ if __name__=="__main__":
 
     notify_reboot()
 
+    # unmount to ensure gvfs isn't hogging the USB slr cam
+    os.system("gvfs-mount -s gphoto2")
+
     # remove old symlink
     os.system("rm -f /var/captures")
 
