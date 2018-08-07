@@ -12,6 +12,7 @@ import logging
 NUM_PHOTOS = 3
 NUM_ROUNDS = 2
 ROUND_DELAY = 30
+CAPTURE_DIR = "/var/captures"
 
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
@@ -39,6 +40,14 @@ def setup_logging(log_filepath, log_level=logging.INFO):
 
 # beginning of main execution
 if __name__=="__main__":
+
+    # check if system has been up for a minute, if not, exit
+    # this is to make sure our housekeeper has finished its job first
+    uptime_str = subprocess.check_output("uptime -p",
+        stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+    # when uptime is less than 1 minute, the output is just "up"
+    if uptime_str.strip() == "up":
+        sys.exit()
 
     # set file path and log level for logging
     try:
@@ -77,8 +86,8 @@ if __name__=="__main__":
 
         for i in range(0,NUM_PHOTOS):
             filename = get_photo_filename() 
-            local_filepath = "/home/pi/captures/%s" % filename
-            ext_filepath = "/mnt/usbstorage/captures/%s" % filename
+            local_filepath = "%s" % filename
+            ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
 
             # NB: no sleep necessary, time delay is in the command
             # NB: this long form with eosremotereleases is the ONLY version that has worked reliably
