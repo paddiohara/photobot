@@ -38,7 +38,8 @@ WSDL_DIR = "/home/pi/.local/wsdl"
 LOREX_HOST = "192.168.0.101"
 LOREX_PORT = 80
 LOREX_USER = 'admin'
-LOREX_PASSWORD = '1wingDfeat'
+# NB: the below is the ONVIF password, not the same as the camera password. Leave as 'admin'
+LOREX_PASSWORD = 'admin'
 
 
 def get_photo_filename():
@@ -88,28 +89,6 @@ if __name__=="__main__":
 
     log.info("-----------------------------------------------------------------------------")
     log.info("EXECUTING RUN at %s" % datetime.now() )
-
-    # get the pid of the last run of photobot, and try to kill that process
-    # this because sometimes the camera and script can hang
-    # it's harmless if the previous pass didn't hang
-    try:
-        # open the text file with the last pid
-        with open("photobot.pid", "r") as f:
-            last_pid = int( f.read() )
-            kill_command = "kill -9 %s" % last_pid
-            output = subprocess.check_output(kill_command, stderr=subprocess.STDOUT, shell=True, universal_newlines=True) 
-            log.info("killed previous process: %i" % last_pid)
-    except Exception, e:
-        # previous process did not hang, do nothing
-        pass 
-
-    # save pid of this pass so that subsequent photobot passes can kill a hung photobot process
-    this_pid = os.getpid()
-    with open("photobot.pid", "w") as f:
-        f.write( str(this_pid) )
-        log.info("saved current pid %i to file" % this_pid)
-   
-    # done process housekeeping 
 
     # instantiate our lorex camera
     # these settings could come from env variables. How will we get the network address??
