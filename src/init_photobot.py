@@ -64,7 +64,8 @@ if __name__=="__main__":
     os.system("gvfs-mount -s gphoto2")
 
     # remove old symlink
-    os.system("rm -f /var/captures")
+    os.system("rm -rf /var/captures")
+    os.system("rm -f /var/lorex")
 
     # attempt to mount the USB drive, returns non-zero on failure
     mount_failed = os.system("mount %s %s" % (USB_DEV, USB_DIR))
@@ -73,13 +74,17 @@ if __name__=="__main__":
     if mount_failed:
         log.info("Mount of usb drive failed, falling back to SD card")
         notify_mount_failed()
-        # make the symlink to local dir
+        # make the symlink to local dir (and local dir if not there)
         os.system("mkdir %s/captures" % SD_DIR)
         os.system("ln -s %s/captures /var/captures" % SD_DIR)
+        os.system("mkdir %s/lorex" % SD_DIR)
+        os.system("ln -s %s/lorex /var/lorex" % SD_DIR)
     else:
         log.info("USB drive mounted.")
         os.system("ln -s %s/captures /var/captures" % USB_DIR)
+        os.system("ln -s %s/lorex /var/lorex" % USB_DIR)
 
     # public permissions on our symlink
     os.system("chmod a+rw /var/captures")
+    os.system("chmod a+rw /var/lorex")
 
