@@ -24,20 +24,21 @@ from lorex import LorexCam
 
 # length of one sequence of photos
 NUM_PHOTOS = 3
-NUM_ROUNDS = 2
+#NUM_ROUNDS = 2
+NUM_ROUNDS = 1
 #ROUND_DELAY = 30
 ROUND_DELAY = 5
 PICTURE_DELAY = 3
 
 # the below will be a symlink to where we want captures
-CAPTURE_DIR = "/var/captures"
+CAPTURE_DIR = "/var/lorex"
 # WSDL dir for the lorex lib
-WSDL_DIR = "/home/pi/master/env/wsdl"
+WSDL_DIR = "/home/pi/.local/wsdl"
 # network host for the camera
 LOREX_HOST = "192.168.0.101"
 LOREX_PORT = 80
 LOREX_USER = 'admin'
-LOREX_PASSWORD = 'admin'
+LOREX_PASSWORD = '1wingDfeat'
 
 
 def get_photo_filename():
