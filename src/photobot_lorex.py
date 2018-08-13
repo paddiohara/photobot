@@ -24,8 +24,7 @@ from lorex import LorexCam
 
 # length of one sequence of photos
 NUM_PHOTOS = 3
-#NUM_ROUNDS = 2
-NUM_ROUNDS = 1
+NUM_ROUNDS = 2
 #ROUND_DELAY = 30
 ROUND_DELAY = 5
 PICTURE_DELAY = 3
@@ -125,7 +124,7 @@ if __name__=="__main__":
     for i in range(0, NUM_ROUNDS):
         for i in range(0, NUM_PHOTOS):
             filename = get_photo_filename() 
-            local_filepath = "~/%s" % filename
+            local_filepath = "%s" % filename
             ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
             # save capture from camera
             lorex_cam.save_image(local_filepath)
