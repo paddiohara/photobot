@@ -75,3 +75,24 @@ Tricky stuff to check
  the background on boot is. Linux docs should tell you!
 - we should see how fast that db file grows. it should prob be on the
   USB drive
+
+Important: turn OFF the gpsd hotplug and init script with:
+==========================================================
+  $ sudo systemctl stop gpsd.socket
+  $ sudo systemctl disable gpsd.socket
+  (this means gpsd doesn't try to start up anymore at all, hence the /etc/default/gpsd file doesn't even matter I think)
+
+  
+Starting Processes on Boot
+=======================
+sudo nano into /etc/rc.local and add the lines (before the last line with "exit 0"):
+
+gpsd -n /dev/ttyACM0
+
+sleep 2
+
+/home/pi/master/env3/bin/python3 /home/pi/master/src/ais_receiver.py --settings /home/pi/master/src/ais_receiver.ini >> /mnt/usbstorage/ais/ais_receiver_log  2>&1 &
+
+   
+
+
