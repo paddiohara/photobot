@@ -98,8 +98,8 @@ class PhotobotInstaller(object):
         if self.confirm("create dir /mnt/usbstorage"):
             self.do("mkdir /mnt/usbstorage")
         self.confirm("plug in USB drive and continue", allow_no=False)
-        print("checking drive ID with 'blkid'")
-        self.do("blkid")
+        print("checking drive ID with lsblk, look for sdaX where X is the drive number and the size matches")
+        self.do("lsblk")
         while True:
             dev_num = int( raw_input("Enter drive number: ") )
             if self.confirm("Drive number is '%i' " % dev_num):
@@ -179,8 +179,9 @@ class PhotobotInstaller(object):
         if not self.confirm("Did you execute this as sudo?"):
             self.exit()
 
-        if self.confirm("setup wifi configuration?"):
-            self.setup_wifi()
+        # we switched to configuring networking pre installation
+        #if self.confirm("setup wifi configuration?"):
+        #    self.setup_wifi()
 
         if self.confirm("Install packages?"):
             self.install_packages()             
@@ -217,10 +218,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry-run', action="store_true", help="print commands but don't run them")
     parser.add_argument('--wpa-file', help="alternate networking file to patch")
-    parser.add_argument('--fstab-file', help="alternate fstab file to patch")
-    parser.add_argument('--cron-file', help="alternate fstab file to patch")
     args = parser.parse_args()
 
-    print("running with args: %s" % args)
-    installer = PhotobotInstaller(args) 
+    installer = PhotobotInstaller(args)
     installer.main()
