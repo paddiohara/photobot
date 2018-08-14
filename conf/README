@@ -1,0 +1,3 @@
+The ais_receiver.conf file is a supervisord conf file to keep the
+ais_receiver.py script running. The installer should make a symlink to this
+file in /etc/supervisor/conf.d
