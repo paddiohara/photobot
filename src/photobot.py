@@ -10,12 +10,6 @@ from configparser import ConfigParser
 import logging
 
 
-# length of one sequence of photos
-NUM_PHOTOS = 3
-NUM_ROUNDS = 1
-ROUND_DELAY = 0
-CAPTURE_DIR = "/var/captures"
-
 # settings that must be present in the ini file
 required_settings = [
     'photos_per_round',
@@ -114,7 +108,7 @@ if __name__=="__main__":
     # take two rounds of pictures, separated by 30 seconds 
     for i in range(0, int(settings['number_of_rounds'])):
 
-        for i in range(0, int(settings['number_of_photos'])):
+        for i in range(0, int(settings['photos_per_round'])):
             filename = get_photo_filename() 
             local_filepath = "%s" % filename
             ext_filepath = "%s/%s" % (settings['capture_dir'], filename)
