@@ -147,9 +147,9 @@ class PhotobotInstaller(object):
 
     def setup_cron(self):
         patch = (
-            "@reboot root /home/pi/photobot/env2/bin/python /home/pi/photobot/src/init_photobot.py"
-            "\n* * * * * root /home/pi/photobot/env2/bin/python /home/pi/photobot/src/photobot.py"
-            "\n* * * * * root python /home/pi/photobot/env2/bin/python /home/pi/photobot/src/photobot_lorex.py")
+            "\n@reboot root /home/pi/photobot/env2/bin/python /home/pi/photobot/src/init_photobot.py"
+            "\n* * * * * root /home/pi/photobot/env2/bin/python /home/pi/photobot/src/photobot.py --settings /home/pi/photobot/src/photobot_gphoto.ini"
+            "\n* * * * * root python /home/pi/photobot/env2/bin/python /home/pi/photobot/src/photobot_lorex.py --settings /home/pi/photobot_lorex.ini")
         if self.confirm("patching %s with patch: '%s'\n?" % (self.cron_file, patch) ):
             if not self.args.dry_run:
                 with open(self.cron_file, "a") as cron_file:
