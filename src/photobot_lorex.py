@@ -18,29 +18,23 @@ import os
 import sys
 import logging
 from lorex import LorexCam
+import argparse
+from configparser import ConfigParser
 
 
-# TODO: move all this stuff into an ini file!
-
-# length of one sequence of photos
-NUM_PHOTOS = 3
-#NUM_ROUNDS = 2
-NUM_ROUNDS = 1
-#ROUND_DELAY = 30
-ROUND_DELAY = 5
-PICTURE_DELAY = 3
-
-# the below will be a symlink to where we want captures
-CAPTURE_DIR = "/var/lorex"
-# WSDL dir for the lorex lib
-WSDL_DIR = "/home/pi/.local/wsdl"
-# network host for the camera
-LOREX_HOST = "192.168.0.101"
-LOREX_PORT = 80
-LOREX_USER = 'admin'
-# NB: the below is the ONVIF password, not the same as the camera password. Leave as 'admin'
-LOREX_PASSWORD = 'admin'
-
+# settings that must be present in the ini file
+required_settings = [
+    'photos_per_round',
+    'number_of_rounds',
+    'delay_between_rounds',
+    'delay_between_photos',
+    'capture_dir',
+    'wsdl_dir',
+    'lorex_host',
+    'lorex_port',
+    'lorex_user',
+    'lorex_password'
+]
 
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
@@ -71,11 +65,32 @@ if __name__=="__main__":
 
     # check if system has been up for a minute, if not, exit
     # this is to make sure our housekeeper has finished its job first
+    # NB: this does NOT work on OSX/BSD, you'll need to disable it for dev on OSX
     uptime_str = subprocess.check_output("uptime -p",
         stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
     # when uptime is less than 1 minute, the output is just "up"
     if uptime_str.strip() == "up":
         sys.exit()
+
+    # register the process identifier utility for multiprocess logging
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument(
+        '--settings',
+        help='Path to settings INI file for Lorex photobot',
+        required=True)
+    options = argparser.parse_args()
+    settings_file = options.settings
+
+    config = ConfigParser()
+    config.read(settings_file)
+    settings = dict(config.items('app:main'))
+
+    # exit if settings file missing items
+    for setting_name in required_settings:
+        try:
+            assert settings[setting_name]
+        except:
+            raise Exception("Missing setting '%s' in ini file" % setting_name)
 
     # set file path and log level for logging
     try:
@@ -93,19 +108,19 @@ if __name__=="__main__":
     # instantiate our lorex camera
     # these settings could come from env variables. How will we get the network address??
     lorex_cam = LorexCam(
-        host = LOREX_HOST,
-        port = LOREX_PORT,
-        user = LOREX_USER,
-        password = LOREX_PASSWORD,
-        wsdl_dir = WSDL_DIR
+        host = settings['lorex_host'],
+        port = settings['lorex_port'],
+        user = settings['lorex_user'],
+        password = settings['lorex_password'],
+        wsdl_dir = settings['wsdl_dir'],
     )
 
-    # take two rounds of pictures, separated by 30 seconds 
-    for i in range(0, NUM_ROUNDS):
-        for i in range(0, NUM_PHOTOS):
+    # execute X rounds of Y pictures according to settings
+    for i in range(0, int(settings['number_of_rounds'])):
+        for i in range(0, int(settings['photos_per_round'])):
             filename = get_photo_filename() 
             local_filepath = "%s" % filename
-            ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
+            ext_filepath = "%s/%s" % (settings['capture_dir'], filename)
             # save capture from camera
             lorex_cam.save_image(local_filepath)
             # move the file from pi to usb drive
@@ -115,7 +130,7 @@ if __name__=="__main__":
                 log.info("image moved to %s" % ext_filepath)
             except subprocess.CalledProcessError as exc:
                 log.info("ERROR moving image: '%s'" % exc.output)
-            time.sleep(PICTURE_DELAY)
+            time.sleep( int(settings['delay_between_photos']) )
 
         # sleep until next round
-        time.sleep( ROUND_DELAY )
+        time.sleep( int(settings['delay_between_rounds']) )

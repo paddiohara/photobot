@@ -1,3 +1,4 @@
 requests
 sqlalchemy
 gps3
+configparser
