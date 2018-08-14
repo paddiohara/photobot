@@ -169,6 +169,16 @@ class PhotobotInstaller(object):
         self.do("virtualenv -p python3 /home/pi/photobot/env3")
         self.do("/home/pi/photobot/env3/bin/pip install -r /home/pi/photobot/requirements3.txt")
 
+
+    def setup_ais(self):
+        print("Setting up ais directory and initializing database")
+        self.do("mkdir /mnt/usbstorage/ais")
+        self.do("/home/pi/photobot/env3/bin/python /home/pi/photobot/src/ais_receiver.py "
+                "--init-db --settings /home/pi/photobot/src/ais_receiver.ini")
+        print("disabling auto start of gpsd")
+        self.do("systemctl stop gpsd.socket")
+        self.do("systemctl disable gpsd.socket")
+
     def chown_files(self):
         print("Setting ownership for all photobot files to pi")
         self.do("chown -R pi:pi /home/pi/photobot")
@@ -207,6 +217,9 @@ class PhotobotInstaller(object):
 
         if self.confirm("Create symlink for ais_receiver supervisord conf file?"):
             self.setup_supervisor()
+
+        if self.confirm("Create ais directory, initialize ais db, and prepare gpsd?"):
+            self.setup_ais()
 
         if self.confirm("Set ownership of touched files to user pi?"):
             self.chown_files()
