@@ -49,16 +49,3 @@ class LorexCam(object):
             print("ERROR saving file, response: %s" % res)
 
 
-if __name__ ==  "__main__":
-    print("Running test of lorex camera...")
-    # test expects there to be a symlink in this directory for the wsdl path
-    lorex_cam = LorexCam(
-        host = '192.168.1.65',
-        port = 80,
-        user = 'admin',
-        password = 'admin',
-        wsdl_dir = '/Users/iainduncan/Sites/patrick/lorex/env/wsdl/'
-    )
-    filename = "lorex_test_capture_-_%s.jpg" % datetime.now().isoformat()
-    lorex_cam.save_image(filename)
-    print("Done, image saved to %s" % filename)
