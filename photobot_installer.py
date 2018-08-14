@@ -86,11 +86,13 @@ class PhotobotInstaller(object):
         self.do("apt-get install nano vim git")
         self.do("apt-get install gphoto2")
         self.do("apt-get install gpsd")
+        self.do("apt-get install python-virtualenv")
         if self.confirm("test gphoto2 to see camera? (plug in camera)"):
             self.do("gphoto2 --list-config")
             self.confirm("camera found, continue?", allow_no=False)    
 
 
+    # TODO: fix this sucker
     def setup_drive(self):
         print("setting up external USB drive")
         if self.confirm("create dir /mnt/usbstorage"):
