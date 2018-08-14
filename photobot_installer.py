@@ -81,12 +81,13 @@ class PhotobotInstaller(object):
 
 
     def install_packages(self):
-        print("running apt-get update, installing nano, vim, git, gphoto2, & gpsd ...")
+        print("running apt-get update, installing nano, vim, git, gphoto2, gpsd, virtualenv, supervisor ...")
         self.do("apt-get update")
         self.do("apt-get install nano vim git")
         self.do("apt-get install gphoto2")
         self.do("apt-get install gpsd")
         self.do("apt-get install python-virtualenv")
+        self.do("apt-get install supervisor")
         if self.confirm("test gphoto2 to see camera? (plug in camera)"):
             self.do("gphoto2 --list-config")
             self.confirm("camera found, continue?", allow_no=False)    
@@ -155,7 +156,7 @@ class PhotobotInstaller(object):
                 with open(self.cron_file, "a") as cron_file:
                     cron_file.write(patch)
         if self.confirm("reload cron to test? "):
-            self.do("restart cron")     
+            self.do("service cron restart")
 
     def setup_supervisor(self):
         print("Creating symlink at /etc/supervisord/conf.d/ais_receiver.conf")
