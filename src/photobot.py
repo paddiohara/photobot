@@ -10,8 +10,8 @@ import logging
 
 # length of one sequence of photos
 NUM_PHOTOS = 3
-NUM_ROUNDS = 2
-ROUND_DELAY = 30
+NUM_ROUNDS = 1
+ROUND_DELAY = 0
 CAPTURE_DIR = "/var/captures"
 
 def get_photo_filename():
