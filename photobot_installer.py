@@ -166,6 +166,10 @@ class PhotobotInstaller(object):
         self.do("virtualenv -p python3 /home/pi/photobot/env3")
         self.do("/home/pi/photobot/env3/bin/pip install -r /home/pi/photobot/requirements3.txt")
 
+    def chown_files(self):
+        print("Setting ownership for all photobot files to pi")
+        self.do("chown -R pi:pi /home/pi/photobot")
+
     # main install process
     def main(self):
         print("Running photobot installer")
@@ -200,6 +204,8 @@ class PhotobotInstaller(object):
         if self.confirm("Create symlink for ais_receiver supervisord conf file?"):
             self.setup_supervisor()
 
+        if self.confirm("Set ownership of touched files to user pi?"):
+            self.chown_files()
 
         print("\nDONE SETUP\n")
 
