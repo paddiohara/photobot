@@ -5,6 +5,7 @@ from datetime import datetime
 import time
 import sys
 import os
+from configparser import ConfigParser
 import logging
 
 
@@ -13,6 +14,14 @@ NUM_PHOTOS = 3
 NUM_ROUNDS = 1
 ROUND_DELAY = 0
 CAPTURE_DIR = "/var/captures"
+
+# settings that must be present in the ini file
+required_settings = [
+    'photos_per_round',
+    'number_of_rounds',
+    'delay_between_rounds',
+    'capture_dir',
+]
 
 def get_photo_filename():
     "return a filename with date and time, ie: capture_2017-04-02_02-03-12"
@@ -49,6 +58,26 @@ if __name__=="__main__":
     if uptime_str.strip() == "up":
         sys.exit()
 
+    # check for a settings file and process
+    # we will exit if settings missing
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument(
+        '--settings',
+        help='Path to settings INI file for Lorex photobot',
+        required=True)
+    options = argparser.parse_args()
+    settings_file = options.settings
+    config = ConfigParser()
+    config.read(settings_file)
+    settings = dict(config.items('app:main'))
+    # exit if settings file missing items
+    for setting_name in required_settings:
+        try:
+            assert settings[setting_name]
+        except:
+            raise Exception("Missing setting '%s' in ini file" % setting_name)
+
+
     # set file path and log level for logging
     try:
         log = setup_logging('/mnt/usbstorage/captures/photobot.log', logging.INFO)
@@ -82,12 +111,12 @@ if __name__=="__main__":
     # done process housekeeping 
 
     # take two rounds of pictures, separated by 30 seconds 
-    for i in range(0, NUM_ROUNDS):
+    for i in range(0, int(settings['number_of_rounds'])):
 
-        for i in range(0,NUM_PHOTOS):
+        for i in range(0, int(settings['number_of_photos'])):
             filename = get_photo_filename() 
             local_filepath = "%s" % filename
-            ext_filepath = "%s/%s" % (CAPTURE_DIR, filename)
+            ext_filepath = "%s/%s" % (settings['capture_dir'], filename)
 
             # NB: no sleep necessary, time delay is in the command
             # NB: this long form with eosremotereleases is the ONLY version that has worked reliably
@@ -110,5 +139,7 @@ if __name__=="__main__":
             except subprocess.CalledProcessError as exc: 
                 log.info("ERROR moving image: '%s'" % exc.output)
 
+            # delay between photos not necessary here, in the gphoto command
+
         # sleep until next round
-        time.sleep( ROUND_DELAY )
+        time.sleep( int(settings['delay_between_rounds']) )
