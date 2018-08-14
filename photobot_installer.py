@@ -118,7 +118,7 @@ class PhotobotInstaller(object):
 
 
     def setup_code(self):
-        print("cloning photobot repository into /home/pi/photobot
+        print("cloning photobot repository into /home/pi/photobot")
         self.do("git clone https://github.com/paddiohara/photobot.git /home/pi/photbot")
 
     def setup_directories(self):
