@@ -13,7 +13,7 @@ class PhotobotInstaller(object):
     def __init__(self, args):
         self.args = args
         self.wpa_file = args.wpa_file or "/etc/wpa_supplicant/wpa_supplicant.conf"
-        self.cron_file = args.cron_file or "/etc/crontab"
+        self.cron_file = "/etc/crontab"
 
 
     def do(self, command, kw=None):
