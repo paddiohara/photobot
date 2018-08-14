@@ -105,7 +105,7 @@ class PhotobotInstaller(object):
             if self.confirm("Drive number is '%i' " % dev_num):
                 break
         print("mounting /dev/sda%i" % dev_num)
-        self.do("mount dev/sda%i /mnt/usbstorage" % dev_num)
+        self.do("mount /dev/sda%i /mnt/usbstorage" % dev_num)
         self.do("chmod 755 /mnt/usbstorage")        
         # no longer mounting with fstab, doing it in the init_script
         #if self.confirm("edit fstab file to automount drive as ext3?"):
