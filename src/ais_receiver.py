@@ -83,7 +83,8 @@ def main():
             #log.debug("received msg: %s" % json_msg)
             try:
                 model.handle_json_message(json_msg)
-            except:
+            except Exception, e:
+                log.debug("  error handling message: %s" % e)
                 pass
     else:
         time.sleep(.001)
