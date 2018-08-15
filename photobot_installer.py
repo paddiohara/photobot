@@ -180,8 +180,9 @@ class PhotobotInstaller(object):
         self.do("systemctl disable gpsd.socket")
 
     def chown_files(self):
-        print("Setting ownership for all photobot files to pi")
+        print("Setting ownership for all photobot files and /mnt/usbstorage to pi:pi")
         self.do("chown -R pi:pi /home/pi/photobot")
+        self.do("chown -R pi:pi /mnt/usbstorage")
 
     # main install process
     def main(self):
