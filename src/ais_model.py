@@ -246,7 +246,6 @@ class Model(object):
             return
 
         # for position messages, (type 1,2,3,18,19) filter on location
-        # TODO: this part needs to be tested properly yo
         if msg_type in [1,2,3,18,19]:
             if( data['lat'] < self.min_lat or data['lat'] > self.max_lat or
               data['lon'] < self.min_lon or data['lon'] > self.max_lon): 
@@ -259,7 +258,7 @@ class Model(object):
 
         dbs = self.Session()
         MessageClass = self._types_to_message_class[msg_type]
-        self.log.debug("strong message of class: %s" % MessageClass)
+        self.log.debug("storing message of class: %s" % MessageClass)
         msg = MessageClass(
             datetime = datetime.now(),
             json_message = json.dumps(data),
@@ -267,4 +266,4 @@ class Model(object):
         )
         dbs.add( msg )
         dbs.commit()
-        self.log.debug(" message stored")
+        self.log.debug("  - message stored")
