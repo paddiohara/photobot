@@ -31,13 +31,14 @@ We're going to install the Pi's operating system on an SD card, tweak it a bit,
 put it in the Pi, boot up, and SSH into the Pi.
 
 ### Download Raspbian Jessie Lite
-- on your host computer, download raspbian-jessie-lite https://www.raspberrypi.org/downloads/raspbian/
-- the latest at time of writing is: January 2017
-- we are using Jessie Lite as we will not be plugging a keyboard and monitor into the Pi, 
-  we're going to do everything over SSH
+- on your host computer, download the Raspbian linux OS for the pi: https://www.raspberrypi.org/downloads/raspbian/
+- the latest at time of writing is: Rasbian Stretch Lite, June 2018
+- we are using Stretch Lite as we will not be plugging a keyboard and monitor into the Pi, 
+  we're going to do everything over SSH. ("Stretch" is just the release nickname)
 
 ### Burn image on the SD card:
-- put the SD card in your card reader and plug it into the USB port on your host
+- put the SD card in your card reader and plug it into the USB port on your host (or 
+  directly into your host if you have an SD card reader built in).
 - find out the disk number of SD card by opening a terminal and executing:
   $ diskutil list
 - look for the entry that matches the size of your card (so we know it's not your host hard drive)
