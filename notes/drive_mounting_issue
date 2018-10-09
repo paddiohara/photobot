@@ -1,0 +1,56 @@
+Drive mounting issue
+
+- sometimes drive doesn't mount and thus fstab fails and the system hangs
+
+Solution:
+- run a program from cron that attempts to mount the drive
+- retval = os.system('mount /dev/sda99 /mnt/foobar')
+  - returns non-zero on failure
+
+- so how would the system know if we've already mounted?
+  - we could write a flag to the system
+
+- can we delay a per minute cron?
+  - we could have it exit if the drive flag is not present
+
+- we could have photobot check how long the system has been up?
+
+- $ uptime -p
+  - returns "up" if up less than a minute
+  - returns "up 1 minute" for longer
+  - so photobot script could check uptime and only run if it's been
+    up more than a minute
+
+- programmatically check whether a disk mounted ok?
+   if grep -qs '/mnt/foo ' /proc/mounts; then it's mounted
+   - need to try that on the pi
+
+- to figure out:
+  - where is the SD drive?
+  - what's the mountpoint of the usb thing
+
+
+TODO CODE:
+- first time photobot runs, it should bail out unless uptime
+  is more than one minute
+  - check results of "uptime -p" from python
+
+- we want to add init program to boot
+  - try to mount the drive
+    - if mount fails, mount sd card
+  - make symlink to drive location
+  - if mount failed, it should notify us somehow
+    mailing from the box likely won't work, but posting a
+    request to the control panel will
+
+- cron for running on reboot
+  @reboot /home/pi/master/env/bin/python /home/pi/master/src/photobot_lorex.py
+
+ /home/pi/master/src/photobot_lorex.py
+
+- there is a gnome monitor that tries to mount the camera, gvfs-mount
+  - possible solution: https://unix.stackexchange.com/questions/273482/disabling-usb-automount-in-gnome3
+
+- to alter on old photobot:
+  - add the wait command from the new one
+  - change where it writes to

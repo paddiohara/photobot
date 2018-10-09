@@ -1,0 +1,23 @@
+Notes on the monitor app:
+
+- db tables for Installation, Notification, Ping, Recipient
+
+Views:
+- dashboard:
+  - shows the last health check for each installation
+  - refreshes itself every five seconds
+- notifications:
+  - shows all problem notifications listed from most recent down
+- receive_ping
+  - gets a post from a photobot as json and creates a ping
+
+
+Ping post:
+json
+{
+  installation_uid:
+  type: 'ping'
+  status: 'ok'
+}
+
+make a script to make the request

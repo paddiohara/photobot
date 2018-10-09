@@ -26,14 +26,20 @@ Changes
 
 Git and Virtual Env
 -------------------
+
+>>> before all this gets done - need to init the repo "master" then when pulling for first time -
+    must provide https://github.com/paddiohara/photobot.git   URL after pull
+
 To keep files in sync better, we have a checkout from the git repo
 on the device at /home/pi/master. To update from hit, we do:
 
 $ cd /home/pi/master
-$ git pull
+$ git pull 
 
 There should now be a python virtual env at /home/pi/master/env. To
 create this on a new setup:
+
+>>>> for this to work - need to install virtualenv first using apt-get
 
 $ cd /home/pi/master
 $ virtualenv env
@@ -65,7 +71,9 @@ file system.
 Rather than add the boot script to linux runlevels, it is scheduled in cron
 to make it easier to administer. We have the following now in /etc/crontab
 
-@reboot /home/pi/master/env/bin/python /home/pi/master/src/photobot_lorex.py
+@reboot root /home/pi/master/env/bin/python /home/pi/master/src/init_pyphotobot.py
+@reboot root /home/pi/master/env/bin/python /home/pi/master/src/photobot_lorex.py
+@reboot root /home/pi/master/env/bin/python /home/pi/master/src/photobot.py
 
 Changes to Photobot Scripts
 ---------------------------
@@ -88,7 +96,9 @@ System File Checklist
 - python dependencies installed using this virtualenv
 - /etc/fstab empty
 - /etc/crontab has:
-  - @reboot /home/pi/master/env/bin/python /home/pi/master/src/photobot_lorex.py
+  - @reboot root /home/pi/master/env/bin/python /home/pi/master/src/init_photobot.py
+  - @reboot root /home/pi/master/env/bin/python /home/pi/master/src/photobot_lorex.py
+  - @reboot root /home/pi/master/env/bin/python /home/pi/master/src/photobot.py
   - crontab entries for both photobot scripts every minute
 
 
