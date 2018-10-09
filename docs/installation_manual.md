@@ -52,16 +52,18 @@ put it in the Pi, boot up, and SSH into the Pi.
   and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
   Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
 
-Alter the image to enable SSH
-  - 2017: Raspbian now disables SSH by default for security so we need to alter the image
-    or we won't be able to get into the Pi when we boot
-  - the boot sector of our burned image should automount on the host from the card reader, as "Boot"
-  - we need to put an empty file called 'ssh' in to the boot directory
-  - on terminal in your host, get into the boot directory and execute:
-    $ sudo touch ssh
-  - check that it worked:
-    $ ls 
-    - you should see the file called 'ssh' in there
+### Alter the image to enable SSH
+- As of 2017, for security reasons, Raspbian disables SSH by default so we need to alter the image
+  or we won't be able to SSH into the Pi when we boot
+- The boot sector of our burned image should automount on the host from the card reader, as "Boot",
+  you might need to eject and put it back in after executing the previous section to see it mount
+- We need to put an empty file called 'ssh' in to the boot directory. (The Pi checks to
+  see if this empty file was deliberately added before enabling SSH to prevent bot-net-of-things activity)
+- In a terminal in your host, cd into the boot directory and execute:
+  $ sudo touch ssh
+- Check that it worked:
+  $ ls 
+  - You should see the file called 'ssh' in there
 
 Load into Pi
   - unmount your SD reader, take out the SD card, put card into pi
