@@ -47,15 +47,17 @@ If you know how to burn the image, skip the next step and resume from "Enable SS
   
   `$ diskutil list`
 - look for the entry that matches the size of your card (so we know it's not your host hard drive)
-- for this example, on our machine it was: /dev/disk2
-- unmount that disk: 
-  $ diskutil unmountDisk /dev/disk2
+- for this example, on our machine it was: **/dev/disk2**
+- unmount that disk:
+ 
+  `$ diskutil unmountDisk /dev/disk2`
 - copy or move the image you downloaded to the current directory, and execute
   the following to copy that image onto your sd card
-  $ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/rdisk2
+  
+  `$ sudo dd bs=1m if=2017-01-11-raspbian-jessie-lite.img of=/dev/rdisk2`
 - note that in the above command, you must replace the name of the image file with your image
-  and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
-  Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
+  and **/dev/rdisk2** with **/dev/rdisk{X}** where X is your disk number. 
+  Note that it is **/dev/rdiskX**, not **/dev/diskX** in this command
 
 ## Enable SSH: Alter the image to enable 
 After we have created a Raspbian image, we will alter it to enable networking.
@@ -66,8 +68,10 @@ log into our Pi unless we enable it.
 - We need to put an empty file called 'ssh' in to the boot directory. (The Pi checks to
   see if this empty file was deliberately added before enabling SSH to prevent bot-net-of-things activity)
 - In a terminal in your host, cd into the boot directory and execute:
-  $ sudo touch ssh
+  
+  `$ sudo touch ssh`
 - Check that it worked:
+
   `$ ls` 
 - You should see the file called 'ssh' in there
 
@@ -80,8 +84,9 @@ log into our Pi unless we enable it.
 - On your host, find the ip address of the pi using a portscanning application or through
   your router. On OSX, we used the free application "ipscan" (free download)
 - Once we know the IP address, we can ssh in to the pi from the host using the 
-  username 'pi' and password 'raspberry'
-  * $ ssh pi@192.168.1.68  
+  username 'pi' and password 'raspberry'. (Replacing the IP below with the one you found).
+  
+  `$ ssh pi@192.168.1.68`
 - You are now on the PI!
 
 
@@ -90,15 +95,17 @@ Now we're going to continue setting up the Pi from the Linux prompt ON the Pi.
 
 ### Update System and Install Tools
 - update the Debian repository info
-  $ sudo apt-get update  
+  
+  `$ sudo apt-get update`
 - you might want to install some text editors (optional). If you do, you know what you want. ;-)
-  $ sudo apt-get install vim nano 
 
-Setup up Wifi
+  `$ sudo apt-get install vim nano`
+
+### Setup up Wifi
 - we have two options: 
    - A) log into PI over ethernet cable and ssh and set it up, what we'll do here
    - B) mount the image file on some host that can read ext3 and edit the filesystem directly
-        - this is easy if you have a host system that runs linux, and otherwise it's a pain
+      - this is easy if you have a host system that runs linux, and otherwise it's a pain
 
 A) setup ON the pi (these commands are executed on the pi, over ssh)
   - scan for networks to find out the name of your wifi network
