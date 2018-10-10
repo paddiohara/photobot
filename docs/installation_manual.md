@@ -30,13 +30,17 @@ either on the host or the Pi. You don't need to type the '$', that's your prompt
 We're going to install the Pi's operating system on an SD card, tweak it a bit,
 put it in the Pi, boot up, and SSH into the Pi.
 
-### Download Raspbian Jessie Lite
+## Download Raspbian Jessie Lite
 - on your host computer, download the Raspbian linux OS for the pi: https://www.raspberrypi.org/downloads/raspbian/
 - the latest at time of writing is: Rasbian Stretch Lite, June 2018
 - we are using Stretch Lite as we will not be plugging a keyboard and monitor into the Pi, 
   we're going to do everything over SSH. ("Stretch" is just the release nickname)
 
-### Burn image on the SD card:
+## Burn image on the SD card:
+How you do this depends on your operating system. You may be able to do this with a 
+graphical tool on your operating system, or you can follow the manual instructions below.
+
+### OSX image burning instructions.
 - put the SD card in your card reader and plug it into the USB port on your host (or 
   directly into your host if you have an SD card reader built in).
 - find out the disk number of SD card by opening a terminal and executing:
@@ -52,11 +56,12 @@ put it in the Pi, boot up, and SSH into the Pi.
   and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
   Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
 
-### Alter the image to enable SSH
-- As of 2017, for security reasons, Raspbian disables SSH by default so we need to alter the image
-  or we won't be able to SSH into the Pi when we boot
-- The boot sector of our burned image should automount on the host from the card reader, as "Boot",
-  you might need to eject and put it back in after executing the previous section to see it mount
+## Alter the image to enable SSH
+After we have created a Raspbian image, we will alter it to enable networking.
+Raspbian, for security reasons, disables SSH by default, so we won't be able to 
+log into our Pi unless we enable it.
+- Take out your SD card and put it back in. Your OS should automount the drives,
+  with the boot sector of our burned image automounting on the host as "Boot".
 - We need to put an empty file called 'ssh' in to the boot directory. (The Pi checks to
   see if this empty file was deliberately added before enabling SSH to prevent bot-net-of-things activity)
 - In a terminal in your host, cd into the boot directory and execute:
