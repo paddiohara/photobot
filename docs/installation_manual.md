@@ -39,7 +39,7 @@ put it in the Pi, boot up, and SSH into the Pi.
 ## Burn image on the SD card:
 How you do this depends on your operating system. You may be able to do this with a 
 graphical tool on your operating system, or you can follow the manual instructions below.
-
+If you know how to burn the image, skip the next step and resume from "Enable SSH"
 ### OSX image burning instructions.
 - put the SD card in your card reader and plug it into the USB port on your host (or 
   directly into your host if you have an SD card reader built in).
@@ -56,7 +56,7 @@ graphical tool on your operating system, or you can follow the manual instructio
   and /dev/rdisk2 with /dev/rdisk{X} where X is your disk number. 
   Note that it is "/dev/rdiskX", not "/dev/diskX" in this command
 
-## Alter the image to enable SSH
+## Enable SSH: Alter the image to enable 
 After we have created a Raspbian image, we will alter it to enable networking.
 Raspbian, for security reasons, disables SSH by default, so we won't be able to 
 log into our Pi unless we enable it.
@@ -70,16 +70,18 @@ log into our Pi unless we enable it.
   $ ls 
   - You should see the file called 'ssh' in there
 
-Load into Pi
-  - unmount your SD reader, take out the SD card, put card into pi
-  - plug Pi into your network with an ethernet cable because it doesn't know how to find wireless
-    yet,
-  - boot the Pi
-  - on your host, find ip address of the pi using a portscanning application 
-    - on OSX we used the application "ipscan" (free download)
-  - once we have the IP, we can ssh in to the pi from the host using username 'pi', password 'raspberry'
-    $ ssh pi@192.168.1.68  
-  - you are now on the PI!
+## Load into Pi
+- Unmount your SD reader, take out the SD card, and put the card into the pi. It slides
+  into the metal holder on the underside of the pi, on the opposite end of the USB plugs.
+- Plug the Pi into your network with an ethernet cable. We need to use a cable because 
+  it doesn't know how to find wireless until we configure wifi.
+- Boot the Pi. This happens as soon as you plug in the power.
+- On your host, find the ip address of the pi using a portscanning application or through
+  your router. On OSX, we used the free application "ipscan" (free download)
+- Once we know the IP address, we can ssh in to the pi from the host using the 
+  username 'pi' and password 'raspberry'
+  $ ssh pi@192.168.1.68  
+- You are now on the PI!
 
 
 Setup the Pi (from the Pi)
