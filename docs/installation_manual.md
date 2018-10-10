@@ -107,22 +107,24 @@ Now we're going to continue setting up the Pi from the Linux prompt ON the Pi.
    - B) mount the image file on some host that can read ext3 and edit the filesystem directly
       - this is easy if you have a host system that runs linux, and otherwise it's a pain
 
-A) setup ON the pi (these commands are executed on the pi, over ssh)
-  - scan for networks to find out the name of your wifi network
-  $ sudo iwlist wlan0 scan
-  - look for your network, ie the same one you use for normal wireless at home
-   (at my house it's called TELUS0001, we're going to pretend my password is "Hunter2")
-  - we need to edit the wireless config file, using the editor of your choice. I use vim,
-    you prob want to use nano if you don't know any linux editors. 
-  $ sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
-  or 
-  $ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+### A) setup ON the pi (these commands are executed on the pi, over ssh) ###
+- scan for networks to find out the name of your wifi network
+  
+  `$ sudo iwlist wlan0 scan`
+- look for your network, ie the same one you use for normal wireless at home
+  (at my house it's called "TELUS0001", we're going to pretend my password is "Hunter2")
+- we need to edit the wireless config file, using the editor of your choice. I use vim,
+  you prob want to use nano if you don't know any linux editors. 
+    
+  `$ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf`
   
 - add in an entry for your wifi and save the file:
+  `
   network={
     ssid="TELUS0001"
     psk="hunter2"
   }
+  `
 
 - restart networking
   $ sudo ifdown wlan0
