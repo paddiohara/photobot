@@ -44,6 +44,7 @@ If you know how to burn the image, skip the next step and resume from "Enable SS
 - put the SD card in your card reader and plug it into the USB port on your host (or 
   directly into your host if you have an SD card reader built in).
 - find out the disk number of SD card by opening a terminal and executing:
+  
   `$ diskutil list`
 - look for the entry that matches the size of your card (so we know it's not your host hard drive)
 - for this example, on our machine it was: /dev/disk2
