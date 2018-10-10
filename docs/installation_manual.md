@@ -120,10 +120,10 @@ Now we're going to continue setting up the Pi from the Linux prompt ON the Pi.
   
 - add in an entry for your wifi and save the file:
 
-    network={
+    `network={
       ssid="TELUS0001"
       psk="hunter2"
-    }
+    }`
 
 - restart networking
   $ sudo ifdown wlan0
