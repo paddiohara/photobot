@@ -80,7 +80,7 @@ log into our Pi unless we enable it.
   your router. On OSX, we used the free application "ipscan" (free download)
 - Once we know the IP address, we can ssh in to the pi from the host using the 
   username 'pi' and password 'raspberry'
-  $ ssh pi@192.168.1.68  
+  * $ ssh pi@192.168.1.68  
 - You are now on the PI!
 
 
