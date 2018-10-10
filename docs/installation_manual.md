@@ -84,15 +84,13 @@ log into our Pi unless we enable it.
 - You are now on the PI!
 
 
-Setup the Pi (from the Pi)
---------------------------
+## Setup the Pi (from the Pi)
 Now we're going to continue setting up the Pi from the Linux prompt ON the Pi.
 
-
-Update System and Install Tools
-  - update the Debian repository info
+### Update System and Install Tools
+- update the Debian repository info
   $ sudo apt-get update  
-  - you might want to install some text editors (optional). If you do, you know what you want. ;-)
+- you might want to install some text editors (optional). If you do, you know what you want. ;-)
   $ sudo apt-get install vim nano 
 
 Setup up Wifi
