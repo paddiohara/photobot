@@ -67,8 +67,8 @@ log into our Pi unless we enable it.
 - In a terminal in your host, cd into the boot directory and execute:
   $ sudo touch ssh
 - Check that it worked:
-  $ ls 
-  - You should see the file called 'ssh' in there
+  `$ ls` 
+- You should see the file called 'ssh' in there
 
 ## Load into Pi
 - Unmount your SD reader, take out the SD card, and put the card into the pi. It slides
